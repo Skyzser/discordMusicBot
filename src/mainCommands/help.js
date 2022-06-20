@@ -13,6 +13,7 @@ module.exports = function help(message) {
             { name: '-Pauses the current song playing:', value: '`!pause`' },
             { name: '-Skips the current song:', value: '`!skip`' },
             { name: '-Loops the current song/unloops the current song:', value: '`!loop`' },
+            { name: '-Stops the music and leaves the voice channel:', value: '`!leave`' },
             { name: '\u200B', value: '-------------------------------------------------------' },
         )
         .addFields(

@@ -16,7 +16,7 @@ client.on('messageCreate', (message) => {
             .trim()
             .substring(1)
             .split(/\s+/);  // The first element of the array destructured as the command, the other elements are the parameters
-            mainCommands(message, commandName);
+            mainCommands(message, commandName, parameters);
             minorCommands(client, message, commandName, parameters);
         }
         //initialTest(message);  // Small test done at the start for learning purposes!
@@ -24,10 +24,25 @@ client.on('messageCreate', (message) => {
 });
 client.login(process.env.BOT_TOKEN);
 
-function mainCommands(message, commandName) {
+function mainCommands(message, commandName, parameters) {
     if(commandName === 'help') {
         const help = require('./mainCommands/help.js');
         help(message);
+    } else if(commandName === 'play') {
+        const play = require('./mainCommands/play.js');
+        play(message, parameters);
+    } else if(commandName === 'pause') {
+        const pause = require('./mainCommands/pause.js');
+        pause(message);
+    } else if(commandName === 'skip') {
+        const skip = require('./mainCommands/skip.js');
+        skip(message);
+    } else if(commandName === 'loop') {
+        const loop = require('./mainCommands/loop.js');
+        loop(message);
+    } else if(commandName === 'leave') {
+        const leave = require('./mainCommands/leave.js');
+        leave(message);
     }
 };
 function minorCommands(client, message, commandName, parameters) {
