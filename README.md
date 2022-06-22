@@ -14,7 +14,7 @@ A music bot designed using the Discord API Library: Discord.js. This bot allows 
 <br>
 <h2>Languages Used</h2>
 
-- <b>Javascript</b>
+- <b>JavaScript</b>
 <br>
 <br>
 <h2>Setup Guide</h2>
