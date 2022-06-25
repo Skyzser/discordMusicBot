@@ -8,7 +8,7 @@ client.on('ready', () => {
 });
 
 const prefix = '!';  // For the command prefix 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', async (message) => {
     if(!message.author.bot) {
         if(message.content.startsWith(prefix)) {
             // Spread Operator: E.g. const [commandName, ...parameters] = commandName, [parameter 1, parameter 2, etc...]
@@ -25,39 +25,49 @@ client.on('messageCreate', (message) => {
 client.login(process.env.BOT_TOKEN);
 
 function mainCommands(message, commandName, parameters) {
-    if(commandName === 'help') {
-        const help = require('./mainCommands/help.js');
-        help(message);
-    } else if(commandName === 'play') {
-        const play = require('./mainCommands/play.js');
-        play(message, parameters);
-    } else if(commandName === 'pause') {
-        const pause = require('./mainCommands/pause.js');
-        pause(message);
-    } else if(commandName === 'skip') {
-        const skip = require('./mainCommands/skip.js');
-        skip(message);
-    } else if(commandName === 'loop') {
-        const loop = require('./mainCommands/loop.js');
-        loop(message);
-    } else if(commandName === 'leave') {
-        const leave = require('./mainCommands/leave.js');
-        leave(message);
+    switch(commandName) {
+        case 'help': 
+            const help = require('./mainCommands/help.js');
+            help(message);
+            break;
+        case 'play':
+            const play = require('./mainCommands/play.js');
+            play(message, parameters);
+            break;
+        case 'pause':
+            const pause = require('./mainCommands/pause.js');
+            pause(message);
+            break;
+        case 'skip':
+            const skip = require('./mainCommands/skip.js');
+            skip(message);
+            break;
+        case 'loop':
+            const loop = require('./mainCommands/loop.js');
+            loop(message);
+            break;
+        case 'leave':
+            const leave = require('./mainCommands/leave.js');
+            leave(message);
     }
 };
 function minorCommands(client, message, commandName, parameters) {
-    if(commandName === 'ping') {
-        const ping = require('./minorCommands/ping.js');
-        ping(client, message);
-    } else if(commandName === 'roll') {
-        const roll = require('./minorCommands/roll.js');
-        roll(message, parameters);
-    } else if(commandName === 'purge') {
-        const purge = require('./minorCommands/purge.js');
-        purge(message, parameters);
-    } else if(commandName === 'kick') {
-        const kick = require('./minorCommands/kick.js');
-        kick(message, parameters);
+    switch(commandName) {
+        case 'ping':
+            const ping = require('./minorCommands/ping.js');
+            ping(client, message);
+            break;
+        case 'roll':
+            const roll = require('./minorCommands/roll.js');
+            roll(message, parameters);
+            break;
+        case 'purge':
+            const purge = require('./minorCommands/purge.js');
+            purge(message, parameters);
+            break;
+        case 'kick':
+            const kick = require('./minorCommands/kick.js');
+            kick(message, parameters);
     }
 };
 
