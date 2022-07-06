@@ -1,7 +1,7 @@
 <h1>discordMusicBot</h1>
 
 <h2>Description</h2>
-A music bot designed using the Discord API Library: Discord.js. This bot allows you to play music in a voice channel.
+A music bot developed using the Discord API Library: Discord.js. This bot allows you to play music in a voice channel.
 <br>
 <br>
 <h2>Features</h2>
