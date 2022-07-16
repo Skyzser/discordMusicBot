@@ -1,3 +1,3 @@
-module.exports = function loop(message) {
-    message.reply('!loop not implemented yet!');
+module.exports = function loop(message, songQueue) {
+    message.reply('loop not implemented yet!')
 };

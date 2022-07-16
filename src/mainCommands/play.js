@@ -1,7 +1,6 @@
 const { joinVoiceChannel } = require('@discordjs/voice');
 
-module.exports = async function play(message, parameters) {
-    //message.reply('!play not implemented yet!');
+module.exports = async function play(message, parameters, songQueue) {
     const channel = await message.member.voice.channel;
     if(!channel) {  // Check if user is in a voice channel
         message.reply('Must join a voice channel first!');
@@ -15,6 +14,10 @@ module.exports = async function play(message, parameters) {
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
             message.channel.send(`Searching **${parameters[0]}**...`);
+            songQueue.push(parameters[0]);
+            // If discord bot not playing anything, say the bot is now playing the current top of queue.
+            // Else, just say bot added request to queue.
+            message.channel.send(`Added **${parameters[0]}** to queue!`);  // Temporary
         }
     }
 };
