@@ -3,7 +3,7 @@ const { joinVoiceChannel } = require('@discordjs/voice');
 module.exports = async function play(message, parameters, songQueue) {
     const userInChannel = await message.member.voice.channel;
     if(!userInChannel) {  // Check if user is in a voice channel
-        message.reply('Must join a voice channel first to use main commands!');
+        message.reply('You are not in a voice channel!');
     } else {
         if(parameters[0] === undefined) {  // Check if user supplied a parameter to request a search for
             message.reply('Please supply a valid song request!');
