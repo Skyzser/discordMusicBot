@@ -31,6 +31,20 @@ client.on('messageCreate', async (message) => {
         //initialTest(message);  // Small test done at the start for learning purposes!
     }
 });
+
+// To clear the queue if the bot gets disconnected by admin privelages (e.g. force disconnect)
+client.on('voiceStateUpdate', (oldState, newState) => {
+    // Old state is the voice state before any updates (e.g. joining the voice channel)
+    // New state is the voice state after any updates (e.g. leaving the voice channel)
+    if(oldState.channelId === null) {
+        console.log(`${oldState.member} joined the voice channel (old state)`);
+    } else if(newState.channelId === null) {
+        console.log(`${newState.member} left the voice channel (new state)`);
+        if(newState.id === client.user.id) {
+            SONG_QUEUE.splice(0, SONG_QUEUE.length);  // Empty the queue
+        }
+    }
+});
 client.login(process.env.BOT_TOKEN);
 
 function mainCommands(message, commandName, parameters, songQueue) {
