@@ -13,7 +13,7 @@ const client = new Client({
 
 client.on('ready', () => {
     console.log(`${client.user.tag} logged in!`);
-    const Guilds = client.guilds.cache.map(guild => guild.id);
+    const Guilds = client.guilds.cache.map(guild => `Name: ${guild.name} and ID: ${guild.id}`);
     console.log(Guilds);
 });
 
