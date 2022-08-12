@@ -37,9 +37,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     // Old state is the voice state before any updates (e.g. joining the voice channel)
     // New state is the voice state after any updates (e.g. leaving the voice channel)
     if(oldState.channelId === null) {
-        console.log(`${oldState.member} joined the voice channel (old state)`);
+        console.log(`${oldState.member.user.tag} joined the voice channel (old state)`);
     } else if(newState.channelId === null) {
-        console.log(`${newState.member} left the voice channel (new state)`);
+        console.log(`${newState.member.user.tag} left the voice channel (new state)`);
         if(newState.id === client.user.id) {
             SONG_QUEUE.splice(0, SONG_QUEUE.length);  // Empty the queue
         }
