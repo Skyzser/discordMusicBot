@@ -35,7 +35,7 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-// To clear the queue if the bot gets disconnected by admin privelages (e.g. force disconnect)
+// For live updates to users in voice channel, such as clearing queue if bot gets disconnected through admin privileges 
 client.on('voiceStateUpdate', async (oldState, newState) => {
     // Old state is the voice state before any updates (e.g. joining the voice channel)
     // New state is the voice state after any updates (e.g. leaving the voice channel)
