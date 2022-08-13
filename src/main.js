@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const { Client, Intents } = require('discord.js');
+const { getVoiceConnection } = require('@discordjs/voice');
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -35,18 +36,29 @@ client.on('messageCreate', async (message) => {
 });
 
 // To clear the queue if the bot gets disconnected by admin privelages (e.g. force disconnect)
-client.on('voiceStateUpdate', (oldState, newState) => {
+client.on('voiceStateUpdate', async (oldState, newState) => {
     // Old state is the voice state before any updates (e.g. joining the voice channel)
     // New state is the voice state after any updates (e.g. leaving the voice channel)
-    if(oldState.channelId === null) {
-        console.log(`${oldState.member.user.tag} joined the voice channel (old state)`);
+    let VC;  // The current voice channel variable
+    if(oldState.channelId === null) {  // Null signifies state does not exist. (i.e. let 1 = joining. If someone joins, oldState is null (since no history) and newState is 1)
+        console.log(`${oldState.member.user.tag} joined the voice channel`);
+        VC = await client.channels.cache.get(newState.channelId);
     } else if(newState.channelId === null) {
-        console.log(`${newState.member.user.tag} left the voice channel (new state)`);
+        console.log(`${newState.member.user.tag} left the voice channel`);
+        VC = await client.channels.cache.get(oldState.channelId);
         if(newState.id === client.user.id) {
             SONG_QUEUE.splice(0, SONG_QUEUE.length);  // Empty the queue
         }
+    } else {
+        VC = await client.channels.cache.get(oldState.channelId);
+    }
+    // VC.members.filter returns the list of members with id equal to the client id. If that list is empty, must means the bot is not in the list, so the bot is not in the voice channel
+    if(VC.members.size <= 1 && VC.members.filter(member => member.id === client.user.id).size !== 0) {  // If the bot is the only member in the voice channel, leave the voice channel
+        const botInChannel = await getVoiceConnection(VC.guild.id);
+        botInChannel.destroy();
     }
 });
+
 client.login(process.env.BOT_TOKEN);
 
 function mainCommands(message, commandName, parameters, songQueue) {
