@@ -1,7 +1,10 @@
 require('dotenv').config();
 
 const { Client, Intents } = require('discord.js');
-const { getVoiceConnection } = require('@discordjs/voice');
+// 'getVoiceConnection' is used to check if bot is in VC
+// 'createAudioPlayer' is used to create a player for the bot to play music.
+const { getVoiceConnection, createAudioPlayer } = require('@discordjs/voice');
+
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -11,6 +14,8 @@ const client = new Client({
         Intents.FLAGS.GUILD_VOICE_STATES,
     ]
 });
+
+const player = createAudioPlayer();  // Player for the music
 
 client.on('ready', () => {
     console.log(`${client.user.tag} logged in!`);
@@ -28,7 +33,7 @@ client.on('messageCreate', async (message) => {
             .trim()
             .substring(1)
             .split(/\s+/);  // The first element of the array destructured as the command, the other elements are the parameters
-            mainCommands(message, commandName, parameters, SONG_QUEUE);
+            mainCommands(message, commandName, parameters, SONG_QUEUE, player);
             minorCommands(client, message, commandName, parameters);
         }
         //initialTest(message);  // Small test done at the start for learning purposes!
@@ -55,13 +60,17 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     // VC.members.filter returns the list of members with id equal to the client id. If that list is empty, must means the bot is not in the list, so the bot is not in the voice channel
     if(VC.members.size <= 1 && VC.members.filter(member => member.id === client.user.id).size !== 0) {  // If the bot is the only member in the voice channel, leave the voice channel
         const botInChannel = await getVoiceConnection(VC.guild.id);
-        botInChannel.destroy();
+        try {
+            botInChannel.destroy();
+        } catch(err) {
+            console.log('voiceStateUpdate error');
+        }
     }
 });
 
 client.login(process.env.BOT_TOKEN);
 
-function mainCommands(message, commandName, parameters, songQueue) {
+function mainCommands(message, commandName, parameters, songQueue, player) {
     switch(commandName) {
         case 'help': 
             const help = require('./mainCommands/help.js');
@@ -69,11 +78,11 @@ function mainCommands(message, commandName, parameters, songQueue) {
             break;
         case 'play':
             const play = require('./mainCommands/play.js');
-            play(message, parameters, songQueue);
+            play(message, parameters, songQueue, player);
             break;
         case 'pause':
             const pause = require('./mainCommands/pause.js');
-            pause(message);
+            pause(player);
             break;
         case 'skip':
             const skip = require('./mainCommands/skip.js');
