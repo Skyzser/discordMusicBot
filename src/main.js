@@ -60,6 +60,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     // VC.members.filter returns the list of members with id equal to the client id. If that list is empty, must means the bot is not in the list, so the bot is not in the voice channel
     if(VC.members.size <= 1 && VC.members.filter(member => member.id === client.user.id).size !== 0) {  // If the bot is the only member in the voice channel, leave the voice channel
         const botInChannel = await getVoiceConnection(VC.guild.id);
+        // Thus far, the only error that arises from this try/catch block of code is when the client is restarted while the bot is still in voice channel, and then the all users leave to try get the bot to leave (the whole reason for the if condition above)
         try {
             botInChannel.destroy();
         } catch(err) {
