@@ -5,7 +5,7 @@ module.exports = async function leave(message, songQueue) {
     if(!botInChannel) {  // Check if bot is in a voice channel
         message.reply('The bot is not in the voice channel!');
     } else {
-        await message.channel.send('Leaving voice channel...')
+        await message.channel.send('Left the voice channel!')
         .then(msg => {
             setTimeout(() => msg.delete(), 500)
         });
