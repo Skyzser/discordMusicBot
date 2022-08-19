@@ -19,10 +19,8 @@ module.exports = async function play(message, parameters, songQueue, player) {
             // --------------------------------------------------------------------------------------------
             // Temporary fix for the fact that the search function is not yet implemented
             songQueue.push(parameters[0]);
-            // If discord bot not playing anything, say the bot is now playing the current top of queue.
-            //message.channel.send(`Now playing **${songQueue[0]}**`);
-            // Else, just say bot added request to queue.
             message.channel.send(`Added **${parameters[0]}** to queue!`);
+            // Display embed only when current song from queue is playing
             // --------------------------------------------------------------------------------------------
             player.play(resource);
 
