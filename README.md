@@ -20,6 +20,7 @@ A music bot developed using the Discord API Library: Discord.js. This bot allows
 <h2>Setup Guide</h2>
 
 - Run <b>npm install</b> to install all dependencies.
-- Create a <b>.env</b> file to store the Discord Bot Token.
+- Create Discord application: https://discord.com/developers/applications
+- Create a <b>.env</b> file to store the Discord Bot Token once application has been created.
 - <b>npm run dev</b> on Terminal to start running the bot.
 - P.S. May need to install nodemon: https://www.npmjs.com/package/nodemon
