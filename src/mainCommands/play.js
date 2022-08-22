@@ -1,7 +1,6 @@
 const { joinVoiceChannel, createAudioResource } = require('@discordjs/voice');
 
 module.exports = async function play(message, parameters, songQueue, player) {
-    const resource = createAudioResource('./src/test.mp3');  // Create an audio resource from a file path
     const userInChannel = await message.member.voice.channel;
 
     if(!userInChannel) {  // Check if user is in a voice channel
@@ -22,6 +21,7 @@ module.exports = async function play(message, parameters, songQueue, player) {
             message.channel.send(`Added **${parameters[0]}** to queue!`);
             // Display embed only when current song from queue is playing
             // --------------------------------------------------------------------------------------------
+            const resource = createAudioResource('./src/test.mp3');  // Create an audio resource from a file path  (should be songQueue[0])
             player.play(resource);
 
             connection.subscribe(player);
