@@ -23,4 +23,5 @@ A music bot developed using the Discord API Library: Discord.js. This bot allows
 - Create Discord application: https://discord.com/developers/applications
 - Create a <b>.env</b> file to store the Discord Bot Token once application has been created.
 - <b>npm run dev</b> on Terminal to start running the bot.
+- Go through the Google API documentation to enable YouTube functionality for the bot: https://developers.google.com/youtube/v3/docs
 - P.S. May need to install nodemon: https://www.npmjs.com/package/nodemon
