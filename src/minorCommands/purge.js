@@ -6,7 +6,7 @@ module.exports = async function purge(message, parameters) {
         if(Number(total)) {
             if(total >= 2 && total <= 100) {
                 await message.delete();  // To not include the command itself in the deleted messages
-                message.channel.bulkDelete(total)
+                message.channel.bulkDelete(total, true)
                     .then(messages => {
                         message.channel.send(`Deleted ${messages.size} messages!`)
                         .catch(err => console.log(err))
