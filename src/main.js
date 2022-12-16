@@ -19,7 +19,7 @@ const player = createAudioPlayer();  // Player for the music
 
 client.on('ready', () => {
     console.log(`${client.user.tag} logged in!`);
-    const Guilds = client.guilds.cache.map(guild => `Name: ${guild.name} and ID: ${guild.id}`);
+    const Guilds = client.guilds.cache.map(guild => `Server name: ${guild.name} and server ID: ${guild.id}`);
     console.log(Guilds);
 });
 
