@@ -1,9 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 
 module.exports = function ping(client, message) {
-    var uptime = client.uptime;  // The duration since the bot started running
-    uptime = generateTimeframe(uptime);
-
+    // client uptime is the duration since the bot was started
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('General Bot Information')
@@ -11,7 +9,7 @@ module.exports = function ping(client, message) {
         .addFields(
             { name: '-Created by:', value: '<@352538460055273483>' },
             { name: '-GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },
-            { name: '-Bot Uptime:', value: `${uptime}` },
+            { name: '-Bot Uptime:', value: `${generateTimeframe(client.uptime)}` },
             { name: '-Bot Latency:', value: `${client.ws.ping} ms` },
         )
     message.channel.send( {embeds: [embed]} );
