@@ -1,6 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function q(message, songQueue) {
+module.exports = function q(params) {
+    const message = params.message, songQueue = params.songQueue;
+
     if(songQueue.length < 1) {
         message.channel.send('Queue is empty!');
     } else {
