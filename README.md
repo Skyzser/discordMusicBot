@@ -3,6 +3,7 @@
 <h2>Description</h2>
 A music bot developed with Javascript using the Discord API Library, Discord.js, and the YouTube API. This bot allows you to play music in a voice channel by querying through user input.
 <hr>
+<br>
 <h2>Features</h2>
 
 - Full music functionality: Play, Pause, Skip, Loop.
@@ -10,6 +11,7 @@ A music bot developed with Javascript using the Discord API Library, Discord.js,
 - For full list of commands:
     - Type <b>!help</b> in a channel while the bot is running.
 <hr>
+<br>
 <h2>Technology</h2>
 
 - JavaScript
@@ -17,6 +19,7 @@ A music bot developed with Javascript using the Discord API Library, Discord.js,
 - Node.js
 - Google Cloud
 <hr>
+<br>
 <h2>Setup Guide</h2>
 
 - Create Discord application: https://discord.com/developers/applications
