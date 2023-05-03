@@ -1,8 +1,6 @@
 var paused = false;
 
-module.exports = function pause(params) {
-    const player = params.player;
-
+module.exports = function pause({ player }) {
     if(paused === false) {
         player.pause();
         paused = true;

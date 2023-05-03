@@ -35,7 +35,7 @@ client.on('messageCreate', async (message) => {
             .split(/\s+/);  // The first element of the array destructured as the command, the other elements are the parameters
 
             // Object to store all parameters needed for all commands
-            var params = {
+            const params = {
                 client: client,
                 message: message,
                 commandName: commandName,

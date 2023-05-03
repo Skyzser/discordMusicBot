@@ -1,9 +1,6 @@
-module.exports = async function purge(params) {
-    const message = params.message, parameters = params.parameters;
-    
-    if(parameters.length === 0) {
-        message.reply('Please provide a value after the !purge command.\nFor help, type **!help**');
-    } else {
+module.exports = async function purge({ message, parameters }) {
+    if(parameters.length === 0) message.reply('Please provide a value after the !purge command.\nFor help, type **!help**');
+    else {
         var total = parameters[0];
         if(Number(total)) {
             if(total >= 2 && total <= 100) {
@@ -16,11 +13,7 @@ module.exports = async function purge(params) {
                             setTimeout(() => msg.delete(), 500)
                         });
                     });
-            } else {
-                message.reply('Must provide a number between 2 and 100 (inclusive)!');
-            }
-        } else {
-            message.reply('Please provide a valid number for the total number of messages to be deleted (0 not valid)!\nFor help, type **!help**');
-        }
+            } else message.reply('Must provide a number between 2 and 100 (inclusive)!');
+        } else message.reply('Please provide a valid number for the total number of messages to be deleted (0 not valid)!\nFor help, type **!help**');
     }
 };

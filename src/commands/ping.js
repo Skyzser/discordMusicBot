@@ -1,7 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 
-module.exports = function ping(params) {
-    const client = params.client, message = params.message;
+module.exports = function ping({ client, message }) {
     // client uptime is the duration since the bot was started
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar

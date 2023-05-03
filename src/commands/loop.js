@@ -1,5 +1,3 @@
-module.exports = function loop(params) {
-    const message = params.message;
-    
+module.exports = function loop({ message }) {
     message.reply('loop not implemented yet!')
 };
