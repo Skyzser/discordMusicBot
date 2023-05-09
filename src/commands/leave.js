@@ -1,7 +1,7 @@
-const { getVoiceConnection } = require('@discordjs/voice');
+import { getVoiceConnection } from '@discordjs/voice';
 
-module.exports = async function leave({ message, songQueue }) {
-    const botInChannel = await getVoiceConnection(message.guild.id);
+export default async function leave({ message, songQueue }) {
+    const botInChannel = getVoiceConnection(message.guild.id);
     if(!botInChannel) message.reply('The bot is not in the voice channel!');
     else {
         await message.channel.send('Left the voice channel!')

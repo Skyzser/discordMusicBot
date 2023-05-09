@@ -6,7 +6,7 @@
     For more info: https://en.wikipedia.org/wiki/Dice_notation
 */
 
-module.exports = function roll({ message, parameters }) {
+export default function roll({ message, parameters }) {
     if(parameters.length === 0) message.reply('Please provide a value after the !roll command.\nFor help, type **!help**');
     else {
         if(!parameters[0].includes('d')) message.reply('Please provide the valid format after the !roll command.\nFor help, type **!help**');

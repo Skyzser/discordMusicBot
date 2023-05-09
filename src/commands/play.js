@@ -1,6 +1,6 @@
-const { joinVoiceChannel, createAudioResource } = require('@discordjs/voice');
+import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
 
-module.exports = async function play({ message, parameters, songQueue, player }) {
+export default async function play({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');

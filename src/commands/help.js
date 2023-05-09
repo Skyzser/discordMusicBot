@@ -1,10 +1,10 @@
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
 
-module.exports = function help({ message }) {
+export default function help({ message }) {
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('Bot Commands')
-        .setAuthor(`Requested by ${message.author.tag}`)
+        .setAuthor({ name: `Requested by ${message.author.tag}` })
         .setDescription('\u200B')
         .addFields(
             { name: '**__List of all the commands the bot can use:__**', value: '\u200B' },

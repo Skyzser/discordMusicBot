@@ -1,4 +1,4 @@
-module.exports = async function purge({ message, parameters }) {
+export default async function purge({ message, parameters }) {
     if(parameters.length === 0) message.reply('Please provide a value after the !purge command.\nFor help, type **!help**');
     else {
         var total = parameters[0];

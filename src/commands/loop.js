@@ -1,3 +1,3 @@
-module.exports = function loop({ message }) {
+export default function loop({ message }) {
     message.reply('loop not implemented yet!')
 };

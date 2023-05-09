@@ -1,11 +1,11 @@
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
 
-module.exports = function ping({ client, message }) {
+export default function ping({ client, message }) {
     // client uptime is the duration since the bot was started
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('General Bot Information')
-        .setAuthor(`Requested by ${message.author.tag}`)
+        .setAuthor({ name: `Requested by ${message.author.tag}` })
         .addFields(
             { name: '-Created by:', value: '<@352538460055273483>' },
             { name: '-GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },

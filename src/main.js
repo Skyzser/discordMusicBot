@@ -1,9 +1,10 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const { Client, Intents } = require('discord.js');
+import { Client, Intents } from 'discord.js';
 // 'getVoiceConnection' is used to check if bot is in VC
 // 'createAudioPlayer' is used to create a player for the bot to play music.
-const { getVoiceConnection, createAudioPlayer } = require('@discordjs/voice');
+import { getVoiceConnection, createAudioPlayer } from '@discordjs/voice';
 
 const client = new Client({
     intents: [
@@ -47,7 +48,7 @@ client.on('messageCreate', async (message) => {
             // This replaces the whole switch statement for each command. Now you can just add a new command file in the commands folder and add a new parameter in the object above if needed
             try {
                 // Dynamically import the commands
-                const command = require(`./commands/${commandName}.js`);
+                const command = await import(`./commands/${commandName}.js`).then(module => module.default);
                 command(params);
             } catch(err) { console.log(err); }
         }
