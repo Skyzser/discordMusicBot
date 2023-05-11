@@ -15,15 +15,15 @@ A music bot developed with Javascript using the Discord API Library, Discord.js,
 <h2>Technology</h2>
 
 - JavaScript
-- Discord.js
 - Node.js
-- Google Cloud
+- Discord.js
 <hr>
 <br>
 <h2>Setup Guide</h2>
 
 - Create Discord application: https://discord.com/developers/applications
-- Create a Google Cloud project to allow the bot to interact with the YouTube API: https://developers.google.com/youtube/v3/docs
-- Run <b>npm install</b> on the terminal to install all dependencies.
-- Create a <b>.env</b> file in your project directory to store the Discord Bot Token once the application has been created.
+- Create a Google Cloud project to allow the bot to interact with the YouTube API: https://console.cloud.google.com/
+- Create an API Key for the YouTube API.
+- Type <b>npm install</b> on the terminal to install all dependencies.
+- Create a <b>.env</b> file in your project directory to store the Discord Bot Token and YouTube API Key once the applications have been created.
 - Type <b>npm run dev</b> on the terminal to start running the bot.
