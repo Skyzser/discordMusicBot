@@ -1,4 +1,5 @@
 import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
+import axios from 'axios';
 
 export default async function play({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
@@ -9,6 +10,11 @@ export default async function play({ message, parameters, songQueue, player }) {
         if(searchQuery === undefined) {  // Check if user supplied a parameter to request a search for
             message.reply('Please supply a valid song request!');
         } else {
+            const response = await fetchQuery(searchQuery);
+            const firstResult = response[0];
+            const videoId = firstResult.id.videoId;
+            message.reply(`https://www.youtube.com/watch?v=${videoId}`);
+            /*
             const connection = joinVoiceChannel({
                 channelId: userInChannel.id,
                 guildId: message.guild.id,
@@ -25,6 +31,15 @@ export default async function play({ message, parameters, songQueue, player }) {
             player.play(resource);
 
             connection.subscribe(player);
+            */
         }
     }
 };
+
+async function fetchQuery(query) {
+    // Update to better querying system //
+    const baseURL = 'https://www.googleapis.com/youtube/v3';
+    const url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
+    const response = await axios.get(url);
+    return response.data.items;
+}
