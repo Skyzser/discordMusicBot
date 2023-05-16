@@ -2,9 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { Client, Intents } from 'discord.js';
-// 'getVoiceConnection' is used to check if bot is in VC
-// 'createAudioPlayer' is used to create a player for the bot to play music.
-import { getVoiceConnection, createAudioPlayer } from '@discordjs/voice';
+import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior } from '@discordjs/voice';
 
 const client = new Client({
     intents: [
@@ -16,7 +14,7 @@ const client = new Client({
     ]
 });
 
-const player = createAudioPlayer();  // Player for the music
+let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } })
 
 client.on('ready', () => {
     console.log(`${client.user.tag} logged in!`);

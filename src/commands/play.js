@@ -1,7 +1,8 @@
 import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
 import axios from 'axios';
+import play from 'play-dl';
 
-export default async function play({ message, parameters, songQueue, player }) {
+export default async function Play({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');
@@ -10,24 +11,23 @@ export default async function play({ message, parameters, songQueue, player }) {
         // Check if user supplied a parameter to request a search for
         if(searchQuery === '') message.reply('Please supply a valid song request!');
         else {
-            const response = await fetchQuery(searchQuery);
-            const firstResult = response[0];
-            const videoId = firstResult.id.videoId;
-            message.reply(`https://www.youtube.com/watch?v=${videoId}`);
-            /*
             const connection = joinVoiceChannel({
                 channelId: userInChannel.id,
                 guildId: message.guild.id,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
-            // Temporary fix for the fact that the search function is not yet implemented (instead of search query, maybe send object)
-            songQueue.push(searchQuery);
-            message.channel.send(`Added **${searchQuery}** to queue!`);
-            const resource = createAudioResource('./src/test.mp3');  // Create an audio resource from a file path  (should be songQueue[0])
-            player.play(resource);
+            const response = await fetchQuery(searchQuery);
+            const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
+            const stream = await play.stream(videoURL);
+            const resource = createAudioResource(stream.stream, {
+                inputType: stream.type
+            })  // Create an audio resource from a file path  (should be songQueue[0])
 
             connection.subscribe(player);
-            */
+            player.play(resource);
+            // ---- Create as embed ---- //
+            message.reply(`${videoURL} added to queue!`);
+            songQueue.push({ title: response[0].snippet.title, url: videoURL });
         }
     }
 };
