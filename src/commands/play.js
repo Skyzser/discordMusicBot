@@ -6,10 +6,10 @@ export default async function play({ message, parameters, songQueue, player }) {
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');
     else {
-        const searchQuery = parameters[0];
-        if(searchQuery === undefined) {  // Check if user supplied a parameter to request a search for
-            message.reply('Please supply a valid song request!');
-        } else {
+        const searchQuery = parameters.toString();
+        // Check if user supplied a parameter to request a search for
+        if(searchQuery === '') message.reply('Please supply a valid song request!');
+        else {
             const response = await fetchQuery(searchQuery);
             const firstResult = response[0];
             const videoId = firstResult.id.videoId;
@@ -20,13 +20,9 @@ export default async function play({ message, parameters, songQueue, player }) {
                 guildId: message.guild.id,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
-            message.channel.send(`Searching **${searchQuery}**...`);
-            // --------------------------------------------------------------------------------------------
-            // Temporary fix for the fact that the search function is not yet implemented
+            // Temporary fix for the fact that the search function is not yet implemented (instead of search query, maybe send object)
             songQueue.push(searchQuery);
             message.channel.send(`Added **${searchQuery}** to queue!`);
-            // Display embed only when current song from queue is playing
-            // --------------------------------------------------------------------------------------------
             const resource = createAudioResource('./src/test.mp3');  // Create an audio resource from a file path  (should be songQueue[0])
             player.play(resource);
 
