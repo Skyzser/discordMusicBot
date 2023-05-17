@@ -7,10 +7,11 @@ export default function ping({ client, message }) {
         .setTitle('General Bot Information')
         .setAuthor({ name: `Requested by ${message.author.tag}` })
         .addFields(
-            { name: '-Created by:', value: '<@352538460055273483>' },
-            { name: '-GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },
-            { name: '-Bot Uptime:', value: `${generateTimeframe(client.uptime)}` },
-            { name: '-Bot Latency:', value: `${client.ws.ping} ms` },
+            { name: '• Created by:', value: '<@352538460055273483>' },
+            { name: '• GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },
+            { name: '• Invite Link:', value: 'https://tinyurl.com/skyzserDiscordBotInvite' },
+            { name: '• Bot Uptime:', value: `${generateTimeframe(client.uptime)}` },
+            { name: '• Bot Latency:', value: `${client.ws.ping} ms` },
         )
     message.channel.send( {embeds: [embed]} );
 };

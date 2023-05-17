@@ -17,6 +17,7 @@ const client = new Client({
 let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } })
 
 client.on('ready', () => {
+    client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
     console.log(`${client.user.tag} logged in!`);
     const Guilds = client.guilds.cache.map(guild => `Server name: ${guild.name} and server ID: ${guild.id}`);
     console.log(Guilds);
@@ -59,10 +60,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     // New state is the voice state after any updates (e.g. leaving the voice channel)
     let VC;  // The current voice channel variable
     if(oldState.channelId === null) {  // Null signifies state does not exist. (i.e. let 1 = joining. If someone joins, oldState is null (since no history) and newState is 1)
-        console.log(`${oldState.member.user.tag} joined the voice channel`);
         VC = await client.channels.cache.get(newState.channelId);
     } else if(newState.channelId === null) {
-        console.log(`${newState.member.user.tag} left the voice channel`);
         VC = await client.channels.cache.get(oldState.channelId);
         if(newState.id === client.user.id) {
             SONG_QUEUE.splice(0, SONG_QUEUE.length);  // Empty the queue

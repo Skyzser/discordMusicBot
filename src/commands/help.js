@@ -8,18 +8,18 @@ export default function help({ message }) {
         .setDescription('\u200B')
         .addFields(
             { name: '**__List of all the commands the bot can use:__**', value: '\u200B' },
-            { name: '-List of commands:', value: '`!help`' },
-            { name: '-Bot joins a voice channel and plays music:', value: '`!play <title>`' },
-            { name: '-Pauses/unpauses the current song playing:', value: '`!pause`' },
-            { name: '-Skips the current song:', value: '`!skip`' },
-            { name: '-Loops/unloops the current song:', value: '`!loop`' },
-            { name: '-Allows to view the full list of songs queued:', value: '`!q`' },
-            { name: '-Stops the music and leaves the voice channel:', value: '`!leave`' },
+            { name: '• List of commands:', value: '`!help`' },
+            { name: '• Bot joins a voice channel and plays music:', value: '`!play <title>`' },
+            { name: '• Pauses/unpauses the current song playing:', value: '`!pause`' },
+            { name: '• Skips the current song:', value: '`!skip`' },
+            { name: '• Loops/unloops the current song:', value: '`!loop`' },
+            { name: '• Allows to view the full list of songs queued:', value: '`!q`' },
+            { name: '• Stops the music and leaves the voice channel:', value: '`!leave`' },
             { name: '\u200B', value: '\u200B' },
-            { name: '-Displays general statistics of the bot:', value: '`!ping`' },
-            { name: '-Roll *A* amount of *X* sided dice:', value: '`!roll <AdX>`' },
-            { name: '-Purge *x* amount of messages (command not included in *x* amount):', value: '`!purge <x>`' },
-            { name: '-Kick a user:', value: '`!kick @<user>`' },
+            { name: '• Displays general statistics of the bot:', value: '`!ping`' },
+            { name: '• Roll *A* amount of *X* sided dice:', value: '`!roll <AdX>`' },
+            { name: '• Purge *x* amount of messages (command not included in *x* amount):', value: '`!purge <x>`' },
+            { name: '• Kick a user:', value: '`!kick @<user>`' },
         )
     message.channel.send( {embeds: [embed]} );
 };

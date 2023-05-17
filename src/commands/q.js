@@ -9,7 +9,7 @@ export default function q({ message, songQueue }) {
                 .setTitle('Song Queue')
                 .setAuthor({ name: `Requested by ${message.author.tag}` })
                 .setDescription('\u200B')
-                .addFields(songQueue.map(({title, url}, i) => {return {'name': `Song ${i + 1}: ${title}`, 'value': `${url}`}}))
+                .addFields(songQueue.map(({title, url}, i) => {return {'name': `• ${i + 1}: ${title}`, 'value': `${url}`}}))
             ]
         });
     }

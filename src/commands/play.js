@@ -25,8 +25,7 @@ export default async function Play({ message, parameters, songQueue, player }) {
 
             connection.subscribe(player);
             player.play(resource);
-            // ---- Create as embed ---- //
-            message.reply(`${videoURL} added to queue!`);
+            message.reply(`${videoURL} added to queue at position: ${songQueue.length + 1}`);
             songQueue.push({ title: response[0].snippet.title, url: videoURL });
         }
     }
