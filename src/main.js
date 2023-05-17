@@ -18,7 +18,6 @@ let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
-    console.log(`${client.user.tag} logged in!`);
     const Guilds = client.guilds.cache.map(guild => `Server name: ${guild.name} and server ID: ${guild.id}`);
     console.log(Guilds);
 });
