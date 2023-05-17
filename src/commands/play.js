@@ -11,14 +11,15 @@ export default async function Command({ message, parameters, songQueue, player }
         // Check if user supplied a parameter to request a search for
         if(searchQuery === '') message.reply('Please supply a valid song request!');
         else {
+            const response = await fetchQuery(searchQuery);
+            const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
+            const stream = await play.stream(videoURL);
+
             const connection = joinVoiceChannel({
                 channelId: userInChannel.id,
                 guildId: message.guild.id,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
-            const response = await fetchQuery(searchQuery);
-            const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
-            const stream = await play.stream(videoURL);
             const resource = createAudioResource(stream.stream, {
                 inputType: stream.type
             })  // Create an audio resource from a file path  (should be songQueue[0])

@@ -14,7 +14,7 @@ const client = new Client({
     ]
 });
 
-let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } })
+let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
