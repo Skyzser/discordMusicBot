@@ -9,7 +9,7 @@ export default function Command({ message }) {
         .addFields(
             { name: '**__List of all the commands the bot can use:__**', value: '\u200B' },
             { name: '• List of commands:', value: '`!help`' },
-            { name: '• Bot joins a voice channel and plays music:', value: '`!play <title>`' },
+            { name: '• Bot joins a voice channel and plays music:', value: '`!play <name|URL>`' },
             { name: '• Pauses/unpauses the current song playing:', value: '`!pause`' },
             { name: '• Skips the current song:', value: '`!skip`' },
             { name: '• Loops/unloops the current song:', value: '`!loop`' },
@@ -20,6 +20,7 @@ export default function Command({ message }) {
             { name: '• Roll *A* amount of *X* sided dice:', value: '`!roll <AdX>`' },
             { name: '• Purge *x* amount of messages (command not included in *x* amount):', value: '`!purge <x>`' },
             { name: '• Kick a user:', value: '`!kick @<user>`' },
+            { name: '• Have bot pick an item from a list of items:', value: '`!decider <item1, item2, item3>`' }
         )
     message.channel.send( {embeds: [embed]} );
 };
