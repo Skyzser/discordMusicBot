@@ -1,6 +1,6 @@
-var paused = false;
+let paused = false;
 
-export default function pause({ player }) {
+export default function Command({ player }) {
     if(!paused) player.pause();
     else player.unpause();
     paused = !paused;

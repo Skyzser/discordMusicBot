@@ -1,3 +1,3 @@
-export default function loop({ message }) {
+export default function Command({ message }) {
     message.reply('loop not implemented yet!')
 };
