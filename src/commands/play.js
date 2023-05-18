@@ -13,7 +13,7 @@ export default async function Command({ message, parameters, songQueue, player }
         else {
             const response = await fetchQuery(searchQuery);
             const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
-            const stream = await play.stream(videoURL);
+            const stream = await play.stream(videoURL, { quality: 2 });
 
             const connection = joinVoiceChannel({
                 channelId: userInChannel.id,
@@ -22,12 +22,13 @@ export default async function Command({ message, parameters, songQueue, player }
             });
             const resource = createAudioResource(stream.stream, {
                 inputType: stream.type
-            })  // Create an audio resource from a file path  (should be songQueue[0])
+            });
 
             connection.subscribe(player);
             player.play(resource);
-            message.reply(`${videoURL} added to queue at position: ${songQueue.length + 1}`);
-            songQueue.push({ title: response[0].snippet.title, url: videoURL });
+
+            message.reply(`${videoURL} added to queue at position: **${songQueue.length + 1}**`);
+            songQueue.push({ title: (response[0].snippet.title).replace('&#39;', '\''), url: videoURL });
         }
     }
 };
