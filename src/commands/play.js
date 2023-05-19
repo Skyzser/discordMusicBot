@@ -28,7 +28,7 @@ export default async function Command({ message, parameters, songQueue, player }
             player.play(resource);
 
             message.reply(`${videoURL} added to queue at position: **${songQueue.length + 1}**`);
-            songQueue.push({ title: (response[0].snippet.title).replace('&#39;', '\''), url: videoURL });
+            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&'), url: videoURL });
         }
     }
 };
