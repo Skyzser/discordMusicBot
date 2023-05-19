@@ -14,16 +14,18 @@ const client = new Client({
     ]
 });
 
-let player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
+const PREFIX = '!';
+let serverIDtoQueueObjectArray = [];  // Initialize empty array to store objects of server IDs and song queues
+const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
     const Guilds = client.guilds.cache.map(guild => `Server name: ${guild.name} and server ID: ${guild.id}`);
     console.log(Guilds);
+    // Assign the empty array to the map of server IDs and song queues
+    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, songQueue: [] } });
 });
 
-const PREFIX = '!';
-let SONG_QUEUE = [];  // To store the list of songs as a queue
 client.on('messageCreate', async (message) => {
     if(!message.author.bot) {
         if(message.content.startsWith(PREFIX)) {
@@ -39,11 +41,10 @@ client.on('messageCreate', async (message) => {
                 message: message,
                 commandName: commandName,
                 parameters: parameters,
-                songQueue: SONG_QUEUE,
+                songQueue: serverIDtoQueueObjectArray.find(({ guildID }) => guildID === message.guild.id).songQueue,
                 player: player
-            }
-            
-            // This replaces the whole switch statement for each command. Now you can just add a new command file in the commands folder and add a new parameter in the object above if needed
+            };
+
             try {
                 // Dynamically import the commands
                 const command = await import(`./commands/${commandName}.js`).then(module => module.default);
@@ -63,7 +64,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     } else if(newState.channelId === null) {
         VC = await client.channels.cache.get(oldState.channelId);
         if(newState.id === client.user.id) {
-            SONG_QUEUE.splice(0, SONG_QUEUE.length);  // Empty the queue
+            const songQueue = serverIDtoQueueObjectArray.find(({ guildID }) => guildID === newState.guild.id).songQueue;
+            songQueue.splice(0, songQueue.length);  // Empty the queue
         }
     } else {
         VC = await client.channels.cache.get(oldState.channelId);
