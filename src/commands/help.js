@@ -12,7 +12,6 @@ export default function Command({ message }) {
             { name: '• Bot joins a voice channel and plays music:', value: '`!play <name|URL>`' },
             { name: '• Pauses/unpauses the current song playing:', value: '`!pause`' },
             { name: '• Skips the current song:', value: '`!skip`' },
-            { name: '• Loops/unloops the current song:', value: '`!loop`' },
             { name: '• Allows to view the full list of songs queued:', value: '`!q`' },
             { name: '• Stops the music and leaves the voice channel:', value: '`!leave`' },
             { name: '\u200B', value: '\u200B' },
@@ -20,7 +19,7 @@ export default function Command({ message }) {
             { name: '• Roll *A* amount of *X* sided dice:', value: '`!roll <AdX>`' },
             { name: '• Purge *x* amount of messages (command not included in *x* amount):', value: '`!purge <x>`' },
             { name: '• Kick a user:', value: '`!kick @<user>`' },
-            { name: '• Have bot pick an item from a list of items:', value: '`!decider <item1, item2, item3>`' }
+            { name: '• Have bot pick an item from a list of items:', value: '`!decider <item1 item2 item3>`' }
         )
     message.channel.send( {embeds: [embed]} );
 };

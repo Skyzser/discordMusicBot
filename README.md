@@ -6,7 +6,7 @@ A music bot developed with Javascript using the Discord API Library, Discord.js,
 <br>
 <h2>Features</h2>
 
-- Full music functionality: Play, Pause, Skip, Loop.
+- Full music functionality: Play, Pause, Skip.
 - Other minor commands, such as kicking a user.
 - For full list of commands:
     - Type <b>!help</b> in a channel while the bot is running.
