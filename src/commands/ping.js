@@ -9,7 +9,6 @@ export default function Command({ client, message }) {
         .addFields(
             { name: '• Created by:', value: '<@352538460055273483>' },
             { name: '• GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },
-            { name: '• Invite Link:', value: 'https://tinyurl.com/skyzserDiscordBotInvite' },
             { name: '• Bot Uptime:', value: `${generateTimeframe(client.uptime)}` },
             { name: '• Bot Latency:', value: `${client.ws.ping} ms` },
         )

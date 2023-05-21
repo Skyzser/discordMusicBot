@@ -28,3 +28,8 @@ A music bot developed with Javascript using the Discord API Library, Discord.js,
 - Create a <b>.env</b> file in your project directory to store the Discord Bot Token and YouTube API Key once the applications have been created.
 - Type <b>npm run dev</b> on the terminal to start running the bot.
   - You will need <b>Nodemon</b> installed to run the bot using this script command (or just create a new script command).
+<hr>
+<br>
+<h2>Invite Link:</h2>
+
+- Here is the invite link if you want to invite a working version of my bot: <b>https://tinyurl.com/skyzserDiscordBotInvite </b>
