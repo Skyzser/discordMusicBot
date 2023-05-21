@@ -1,9 +1,10 @@
-import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
+import { joinVoiceChannel, createAudioResource, getVoiceConnection } from '@discordjs/voice';
 import axios from 'axios';
 import play from 'play-dl';
 
 export default async function Command({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
+    const botInChannel = getVoiceConnection(message.guild.id);
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');
     else {
@@ -24,11 +25,23 @@ export default async function Command({ message, parameters, songQueue, player }
                 inputType: stream.type
             });
 
-            connection.subscribe(player);
-            player.play(resource);
+            if(songQueue.length === 0) {
+                connection.subscribe(player);
+                player.play(resource);
+            } else {
+                // If song finished playing, play next song in queue
+                player.on('idle', () => {
+                    songQueue.shift();
+                    connection.subscribe(player);
+                    if(songQueue.length > 0) {
+                        player.play(songQueue[0].resource);
+                        message.channel.send(`Now playing **${songQueue[0].title}**`);
+                    }
+                });
+            }
 
             message.reply(`${videoURL} added to queue at position: **${songQueue.length + 1}**`);
-            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&'), url: videoURL });
+            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&'), url: videoURL, resource: resource });
         }
     }
 };
