@@ -20,10 +20,9 @@ const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavi
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
-    const Guilds = client.guilds.cache.map(guild => `Server name: ${guild.name} and server ID: ${guild.id}`);
-    console.log(Guilds);
     // Assign the empty array to the map of server IDs and song queues
-    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, songQueue: [] } });
+    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, guildName: guild.name, songQueue: [] } });
+    console.log(serverIDtoQueueObjectArray.map(guild => `Server ID: ${guild.guildID} and server name: ${guild.guildName}`));
 });
 
 client.on('messageCreate', async (message) => {
