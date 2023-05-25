@@ -25,23 +25,13 @@ export default async function Command({ message, parameters, songQueue, player }
                 inputType: stream.type
             });
 
-            if(songQueue.length === 0) {
-                connection.subscribe(player);
-                player.play(resource);
-            } else {
-                // If song finished playing, play next song in queue
-                player.on('idle', () => {
-                    songQueue.shift();
-                    connection.subscribe(player);
-                    if(songQueue.length > 0) {
-                        player.play(songQueue[0].resource);
-                        message.channel.send(`Now playing **${songQueue[0].title}**`);
-                    }
-                });
-            }
+            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&').replaceAll('&quot;', '\"'), url: videoURL, resource: resource });
 
-            message.reply(`${videoURL} added to queue at position: **${songQueue.length + 1}**`);
-            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&'), url: videoURL, resource: resource });
+            if(songQueue.length === 1) {
+                connection.subscribe(player);
+                player.play(songQueue[0].resource);
+            }
+            message.reply(`${videoURL} added to queue at position: **${songQueue.length}**`);
         }
     }
 };

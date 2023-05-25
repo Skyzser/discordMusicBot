@@ -16,12 +16,11 @@ const client = new Client({
 
 const PREFIX = '!';
 let serverIDtoQueueObjectArray = [];  // Initialize empty array to store objects of server IDs and song queues
-const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
     // Assign the empty array to the map of server IDs and song queues
-    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, guildName: guild.name, songQueue: [] } });
+    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, guildName: guild.name, songQueue: [], player: createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } }) } });
     console.log(serverIDtoQueueObjectArray.map(guild => `Server ID: ${guild.guildID} and server name: ${guild.guildName}`));
 });
 
@@ -41,7 +40,7 @@ client.on('messageCreate', async (message) => {
                 commandName: commandName,
                 parameters: parameters,
                 songQueue: serverIDtoQueueObjectArray.find(({ guildID }) => guildID === message.guild.id).songQueue,
-                player: player
+                player: serverIDtoQueueObjectArray.find(({ guildID }) => guildID === message.guild.id).player
             };
 
             try {
