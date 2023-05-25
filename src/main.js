@@ -15,13 +15,24 @@ const client = new Client({
 });
 
 const PREFIX = '!';
-let serverIDtoQueueObjectArray = [];  // Initialize empty array to store objects of server IDs and song queues
+let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
 
 client.on('ready', () => {
     client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
     // Assign the empty array to the map of server IDs and song queues
-    serverIDtoQueueObjectArray = client.guilds.cache.map(guild => { return { guildID: guild.id, guildName: guild.name, songQueue: [], player: createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } }) } });
-    console.log(serverIDtoQueueObjectArray.map(guild => `Server ID: ${guild.guildID} and server name: ${guild.guildName}`));
+    dictionary = client.guilds.cache.map(item => {
+        return {
+            guildID: item.id,
+            guildName: item.name,
+            songQueue: [],
+            player: createAudioPlayer({
+                behaviors: {
+                    noSubscriber: NoSubscriberBehavior.Play
+                }
+            })
+        }
+    });
+    console.log(dictionary.map(item => `Server ID: ${item.guildID} and server name: ${item.guildName}`));
 });
 
 client.on('messageCreate', async (message) => {
@@ -39,8 +50,8 @@ client.on('messageCreate', async (message) => {
                 message: message,
                 commandName: commandName,
                 parameters: parameters,
-                songQueue: serverIDtoQueueObjectArray.find(({ guildID }) => guildID === message.guild.id).songQueue,
-                player: serverIDtoQueueObjectArray.find(({ guildID }) => guildID === message.guild.id).player
+                songQueue: dictionary.find(({ guildID }) => guildID === message.guild.id).songQueue,
+                player: dictionary.find(({ guildID }) => guildID === message.guild.id).player
             };
 
             try {
@@ -57,17 +68,15 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     // Old state is the voice state before any updates (e.g. joining the voice channel)
     // New state is the voice state after any updates (e.g. leaving the voice channel)
     let VC;  // The current voice channel variable
-    if(oldState.channelId === null) {  // Null signifies state does not exist. (i.e. let 1 = joining. If someone joins, oldState is null (since no history) and newState is 1)
-        VC = await client.channels.cache.get(newState.channelId);
-    } else if(newState.channelId === null) {
+    // Null signifies state does not exist. (i.e. let 1 = joining. If someone joins, oldState is null (since no history) and newState is 1)
+    if(oldState.channelId === null) VC = await client.channels.cache.get(newState.channelId);
+    else if(newState.channelId === null) {
         VC = await client.channels.cache.get(oldState.channelId);
         if(newState.id === client.user.id) {
-            const songQueue = serverIDtoQueueObjectArray.find(({ guildID }) => guildID === newState.guild.id).songQueue;
+            const songQueue = dictionary.find(({ guildID }) => guildID === newState.guild.id).songQueue;
             songQueue.splice(0, songQueue.length);  // Empty the queue
         }
-    } else {
-        VC = await client.channels.cache.get(oldState.channelId);
-    }
+    } else VC = await client.channels.cache.get(oldState.channelId);
     // VC.members.filter returns the list of members with id equal to the client id. If that list is empty, must mean the bot is not in the list, so the bot is not in the voice channel
     if(VC.members.size <= 1 && VC.members.filter(member => member.id === client.user.id).size !== 0) {  // If the bot is the only member in the voice channel, leave the voice channel
         const botInChannel = await getVoiceConnection(VC.guild.id);

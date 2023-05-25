@@ -25,7 +25,14 @@ export default async function Command({ message, parameters, songQueue, player }
                 inputType: stream.type
             });
 
-            songQueue.push({ title: (response[0].snippet.title).replaceAll('&#39;', '\'').replaceAll('&amp;', '&').replaceAll('&quot;', '\"'), url: videoURL, resource: resource });
+            songQueue.push({
+                title: (response[0].snippet.title)
+                    .replaceAll('&#39;', '\'')
+                    .replaceAll('&amp;', '&')
+                    .replaceAll('&quot;', '\"'),
+                url: videoURL,
+                resource: resource
+            });
 
             if(songQueue.length === 1) {
                 connection.subscribe(player);
