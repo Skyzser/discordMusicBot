@@ -1,4 +1,4 @@
-import { joinVoiceChannel, createAudioResource, getVoiceConnection } from '@discordjs/voice';
+import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
 import axios from 'axios';
 import play from 'play-dl';
 
