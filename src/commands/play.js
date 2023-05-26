@@ -4,7 +4,6 @@ import play from 'play-dl';
 
 export default async function Command({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
-    const botInChannel = getVoiceConnection(message.guild.id);
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');
     else {

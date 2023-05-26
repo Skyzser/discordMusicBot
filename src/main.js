@@ -1,8 +1,7 @@
 import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { Client, Intents } from 'discord.js';
 import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior } from '@discordjs/voice';
+dotenv.config();
 
 const client = new Client({
     intents: [
@@ -13,7 +12,6 @@ const client = new Client({
         Intents.FLAGS.GUILD_VOICE_STATES,
     ]
 });
-
 const PREFIX = '!';
 let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
 
@@ -23,7 +21,6 @@ client.on('ready', () => {
     dictionary = client.guilds.cache.map(item => {
         return {
             guildID: item.id,
-            guildName: item.name,
             songQueue: [],
             player: createAudioPlayer({
                 behaviors: {
@@ -32,7 +29,7 @@ client.on('ready', () => {
             })
         }
     });
-    console.log(dictionary.map(item => `Server ID: ${item.guildID} and server name: ${item.guildName}`));
+    //console.log(dictionary.map(item => `Server ID: ${item.guildID} and server name: ${item.guildName}`));  // Will need to reintroduce guildName if this line is needed
 });
 
 client.on('messageCreate', async (message) => {
