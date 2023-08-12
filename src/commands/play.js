@@ -13,8 +13,14 @@ export default async function Command({ message, parameters, songQueue, player }
         else {
             const response = await fetchQuery(searchQuery);
             const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
-            const stream = await play.stream(videoURL, { quality: 2 });
-
+            // This is a workaround for the play-dl package not being able to play age restricted videos
+            let stream = null;
+            try {
+                stream = await play.stream(videoURL, { quality: 2 });
+            } catch(e) { 
+                message.reply('This video is age restricted and cannot be played!');
+                return;
+            }
             const connection = joinVoiceChannel({
                 channelId: userInChannel.id,
                 guildId: message.guild.id,
@@ -43,7 +49,6 @@ export default async function Command({ message, parameters, songQueue, player }
 };
 
 async function fetchQuery(query) {
-    // Update to better querying system //
     const baseURL = 'https://www.googleapis.com/youtube/v3';
     const url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
     const response = await axios.get(url);
