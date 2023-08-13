@@ -7,7 +7,7 @@ export default function Command({ message, songQueue }) {
             embeds: [new MessageEmbed()
                 .setColor('#0B1D46')
                 .setTitle('Song Queue')
-                .setAuthor({ name: `Requested by ${message.author.tag}` })
+                .setAuthor({ name: `Requested by ${message.author.username}` })
                 .setDescription('\u200B')
                 .addFields(songQueue.map(({title, url}, i) => {return {'name': `• ${i + 1}: ${title}`, 'value': `${url}`}}))
             ]

@@ -5,7 +5,7 @@ export default function Command({ client, message }) {
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('General Bot Information')
-        .setAuthor({ name: `Requested by ${message.author.tag}` })
+        .setAuthor({ name: `Requested by ${message.author.username}` })
         .addFields(
             { name: '• Created by:', value: '<@352538460055273483>' },
             { name: '• GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },

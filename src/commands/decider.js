@@ -7,7 +7,7 @@ export default function Command({ message, parameters }) {
         const embed = new MessageEmbed()
             .setColor('#0B1D46')  // Colour of sidebar
             .setTitle('Item Decider')
-            .setAuthor({ name: `Requested by ${message.author.tag}` })
+            .setAuthor({ name: `Requested by ${message.author.username}` })
             .addFields(
                 { name: '**Item List**', value: `${parameters}` },
                 { name: 'I choose:', value: `${parameters[randomChoice]}` }
