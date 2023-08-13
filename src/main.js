@@ -1,7 +1,6 @@
-import * as dotenv from 'dotenv';
+import 'dotenv/config.js';
 import { Client, Intents } from 'discord.js';
 import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior } from '@discordjs/voice';
-dotenv.config();
 
 const client = new Client({
     intents: [
