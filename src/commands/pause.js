@@ -1,7 +1,6 @@
-let paused = false;
+import { AudioPlayerStatus } from '@discordjs/voice';
 
 export default function Command({ player }) {
-    if(!paused) player.pause();
-    else player.unpause();
-    paused = !paused;
+    if(player.state.status === AudioPlayerStatus.Paused) player.unpause();
+    else player.pause();
 };
