@@ -12,6 +12,7 @@ export default async function Command({ message, parameters, songQueue, player }
         if(searchQuery === '') message.reply('Please supply a valid song request!');
         else {
             const response = await fetchQuery(searchQuery);
+            if(response.length === 0) return;
             const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
             // This is a workaround for the play-dl package not being able to play age restricted videos
             let stream = null;
