@@ -1,6 +1,6 @@
 import 'dotenv/config.js';
 import { Client, Intents } from 'discord.js';
-import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior } from '@discordjs/voice';
+import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } from '@discordjs/voice';
 
 const client = new Client({
     intents: [
@@ -15,18 +15,33 @@ const PREFIX = '!';
 let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
 
 client.on('ready', () => {
-    client.user.setActivity('!help for list of commands', { type: 'PLAYING' });
-    // Assign the empty array to the map of server IDs and song queues
-    dictionary = client.guilds.cache.map(item => {
-        return {
-            guildID: item.id,
-            songQueue: [],
-            player: createAudioPlayer({
-                behaviors: {
-                    noSubscriber: NoSubscriberBehavior.Play
+    client.guilds.cache.forEach(guild => {
+        const player = createAudioPlayer({
+            behaviors: {
+                noSubscriber: NoSubscriberBehavior.Play,
+            },
+        });
+
+        const songQueue = [];  // Initialize songQueue here
+
+        dictionary.push({
+            guildID: guild.id,
+            songQueue: songQueue,  // Store the reference in the dictionary
+            player: player
+        });
+
+        player.on(AudioPlayerStatus.Idle, () => {
+            if(songQueue.length === 0) return;
+            else {
+                try {
+                    songQueue.shift();
+                    player.play(songQueue[0].resource);
+                } catch(err) { 
+                    // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
+                    //console.log('queue autoplay error'); 
                 }
-            })
-        }
+            }
+        });
     });
     //console.log(dictionary.map(item => `Server ID: ${item.guildID} and server name: ${item.guildName}`));  // Will need to reintroduce guildName if this line is needed
 });
@@ -54,7 +69,10 @@ client.on('messageCreate', async (message) => {
                 // Dynamically import the commands
                 const command = await import(`./commands/${commandName}.js`).then(module => module.default);
                 command(params);
-            } catch(err) { console.log(err); }
+            } catch(err) { 
+                // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
+                //console.log('commands error'); 
+            }
         }
     }
 });
@@ -80,7 +98,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         try {
             botInChannel.destroy();
         } catch(err) {
-            console.log('voiceStateUpdate error');
+            // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
+            //console.log('voiceStateUpdate error');
         }
     }
 });
