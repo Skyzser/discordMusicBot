@@ -1,6 +1,6 @@
 import { Permissions } from 'discord.js';
 
-export default async function Command({ message, parameters }) {
+export default async function Kick({ message, parameters }) {
     // Checks if the user has the permission to kick
     if(!message.member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) message.reply('You do not have permissions to use this command!');
     else {

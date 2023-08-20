@@ -2,7 +2,7 @@ import { joinVoiceChannel, createAudioResource } from '@discordjs/voice';
 import axios from 'axios';
 import play from 'play-dl';
 
-export default async function Command({ message, parameters, songQueue, player }) {
+export default async function Play({ message, parameters, songQueue, player }) {
     const userInChannel = await message.member.voice.channel;
     // Check if user is in a voice channel
     if(!userInChannel) message.reply('You are not in a voice channel!');

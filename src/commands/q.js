@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 
-export default function Command({ message, songQueue }) {
+export default function Queue({ message, songQueue }) {
     if(songQueue.length === 0) message.channel.send('Queue is empty!');
     else {
         message.channel.send({

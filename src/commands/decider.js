@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 
-export default function Command({ message, parameters }) {
+export default function Decider({ message, parameters }) {
     if(parameters.length === 0) message.reply('Please provide a value after the !decider command.\nFor help, type **!help**');
     else {
         const randomChoice = Math.floor(Math.random() * parameters.length);

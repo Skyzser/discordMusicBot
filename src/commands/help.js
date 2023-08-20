@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 
-export default function Command({ message }) {
+export default function Help({ message }) {
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('Bot Commands')
