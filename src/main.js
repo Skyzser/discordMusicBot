@@ -2,6 +2,9 @@ import 'dotenv/config.js';
 import { Client, Intents } from 'discord.js';
 import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } from '@discordjs/voice';
 
+const PREFIX = '!';
+let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
+
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -11,8 +14,8 @@ const client = new Client({
         Intents.FLAGS.GUILD_VOICE_STATES,
     ]
 });
-const PREFIX = '!';
-let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
+
+client.login(process.env.BOT_TOKEN);
 
 client.on('ready', () => {
     client.guilds.cache.forEach(guild => {
@@ -103,5 +106,3 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     }
 });
-
-client.login(process.env.BOT_TOKEN);
