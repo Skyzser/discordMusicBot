@@ -2,7 +2,7 @@ import 'dotenv/config.js';
 import { Client, Intents } from 'discord.js';
 import { getVoiceConnection, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } from '@discordjs/voice';
 
-const PREFIX = '?';
+const PREFIX = '!';
 let dictionary = [];  // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
 
 const client = new Client({
