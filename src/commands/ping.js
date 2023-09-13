@@ -24,5 +24,5 @@ function generateTimeframe(uptime) {
     let minutes = Math.floor(totalSeconds / 60);
     let seconds = Math.floor(totalSeconds % 60);
 
-    return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`;
+    return `${days} day${days !== 1 ? 's' : ''}, ${hours} hour${hours !== 1 ? 's' : ''}, ${minutes} minute${minutes !== 1 ? 's' : ''} and ${seconds} second${seconds !== 1 ? 's' : ''}`;
 }
