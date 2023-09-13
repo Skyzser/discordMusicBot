@@ -1,7 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 
 export default function Ping({ client, message }) {
-    // client uptime is the duration since the bot was started
     const embed = new MessageEmbed()
         .setColor('#0B1D46')  // Colour of sidebar
         .setTitle('General Bot Information')
@@ -11,6 +10,7 @@ export default function Ping({ client, message }) {
             { name: '• GitHub:', value: 'https://github.com/Skyzser/discordMusicBot.git' },
             { name: '• Bot Uptime:', value: `${generateTimeframe(client.uptime)}` },
             { name: '• Bot Latency:', value: `${client.ws.ping} ms` },
+            { name: '• Server count:', value: `${client.guilds.cache.size} servers` },
         )
     message.channel.send( {embeds: [embed]} );
 };
