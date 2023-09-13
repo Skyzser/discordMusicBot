@@ -26,7 +26,7 @@ Before you begin, ensure you have the following prerequisites:
 - Created a Google Cloud project to allow the bot to interact with the YouTube API: https://console.cloud.google.com/ (You will need to enable the YouTube Data API v3)
 
 ### Installation
-- Clone the repository: git clone https://github.com/Skyzser/discordMusicBot.git
+- Clone the repository: `git clone https://github.com/Skyzser/discordMusicBot.git`
 - Navigate to the project directory: `cd discordMusicBot`
 - Install all dependencies: `npm install`
 - Create a <b>.env</b> file in your project directory to store the Discord Bot Token and YouTube API Key: 
