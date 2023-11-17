@@ -8,7 +8,6 @@ A music bot developed with JavaScript using the Discord API Library, Discord.js,
 - Other minor commands, such as kicking a user.
 - For full list of commands:
     - Type <b>!help</b> in a channel while the bot is running.
-- <b>P.S.</b> You can not query playlists, only individual videos/songs.
 
 ## Technology
 - JavaScript
