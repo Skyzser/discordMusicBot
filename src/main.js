@@ -18,6 +18,7 @@ const client = new Client({
 client.login(process.env.BOT_TOKEN);
 
 client.on('ready', () => {
+    console.log(`${client.user.username} has logged in.`);
     client.guilds.cache.forEach(guild => {
         const player = createAudioPlayer({
             behaviors: {
