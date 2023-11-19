@@ -9,12 +9,12 @@ export default async function Skip({ message, parameters, songQueue, player }) {
             // If you just type !skip, it will skip the current song
             if(parameters.length === 0) {
                 const skippedSong = songQueue.shift();
-                message.channel.send(`Skipped **${skippedSong.title}**`);
+                message.channel.send(`Skipped **${regexChecker(skippedSong.title)}**`);
 
                 if(songQueue.length === 0) player.stop();
                 else {
                     player.play(songQueue[0].resource);
-                    message.channel.send(`Now playing **${songQueue[0].title}**`);
+                    message.channel.send(`Now playing **${regexChecker(songQueue[0].title)}**`);
                 }
             }
             else {
@@ -31,10 +31,15 @@ export default async function Skip({ message, parameters, songQueue, player }) {
                     if(songQueue.length === 0) player.stop();
                     else {
                         player.play(songQueue[0].resource);
-                        message.channel.send(`Now playing **${songQueue[0].title}**`);
+                        message.channel.send(`Now playing **${regexChecker(songQueue[0].title)}**`);
                     }
                 } else message.reply('Please provide a valid number for the total number of songs to be skipped!\nFor help, type **!help**');
             }
         }
     }
 };
+
+function regexChecker(string) {
+    let regex = /(\*|_|~|`|\\|\||\#)/g;
+    return string.replaceAll(regex, '\\$1');
+}
