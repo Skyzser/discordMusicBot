@@ -3,14 +3,24 @@ import { MessageEmbed } from 'discord.js';
 export default function Queue({ message, songQueue }) {
     if(songQueue.length === 0) message.channel.send('Queue is empty!');
     else {
-        message.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor('#0B1D46')
-                .setTitle('Song Queue')
-                .setAuthor({ name: `Requested by ${message.author.username}` })
-                .setDescription('\u200B')
-                .addFields(songQueue.map(({title, url}, i) => {return {'name': `• ${i + 1}: ${title}`, 'value': `${url}`}}))
-            ]
-        });
+        if(songQueue.length === 1) {
+            message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor('#0B1D46')
+                    .setAuthor({ name: `Requested by ${message.author.username}` })
+                    .addFields({'name': '**Now Playing**', 'value': `[${songQueue[0].title}](${songQueue[0].url})`})
+                    .addFields({'name': '**Queue**', 'value': 'Queue empty!'})
+                ]
+            });
+        } else {
+            message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor('#0B1D46')
+                    .setAuthor({ name: `Requested by ${message.author.username}` })
+                    .addFields({'name': '**Now Playing**', 'value': `[${songQueue[0].title}](${songQueue[0].url})`})
+                    .addFields({'name': '**Queue**', 'value': `${songQueue.slice(1).map((item, index) => `${index + 1}. [${item.title}](${item.url})`).join('\n')}`})
+                ]
+            });
+        }
     }
 };
