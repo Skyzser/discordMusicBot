@@ -11,21 +11,13 @@ export default async function Play({ message, parameters, songQueue, player }) {
         // Check if user supplied a parameter to request a search for
         if(searchQuery === '') message.reply('Please supply a valid song request!');
         else {
-            const response = null;
-            // This is a workaround for when the bot reaches the API quota limit
-            try {
-                response = await fetchQuery(searchQuery);
-            } catch(e) {
-                message.reply('An error occurred while searching for the video!');
-                return;
-            }
-
+            const response = await fetchQuery(searchQuery);
             if(response.length === 0) {
                 message.reply('No videos found!');
                 return;
             }
-
             const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
+            
             // This is a workaround for the play-dl package not being able to play age restricted videos
             let stream = null;
             try {
