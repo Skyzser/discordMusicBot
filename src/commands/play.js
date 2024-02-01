@@ -13,11 +13,8 @@ export default async function Play({ message, parameters, songQueue, player }) {
       message.reply("Please supply a valid song request!");
     else {
       const response = await fetchQuery(searchQuery);
-      if (response.length === 0) {
-        message.reply("No videos found!");
-        return;
-      }
-      const videoURL = `https://www.youtube.com/watch?v=${response[0].id.videoId}`;
+      /* ==========================  Make this a function that both video and playlist can use ==========================
+      const videoURL = `https://www.youtube.com/watch?v=${response.id.videoId}`;
 
       // This is a workaround for the play-dl package not being able to play age restricted videos
       let stream = null;
@@ -53,13 +50,39 @@ export default async function Play({ message, parameters, songQueue, player }) {
       message.reply(
         `${videoURL} added to queue at position: **${songQueue.length}**`
       );
+      */
+      console.log(response.type);
+      console.log(response.data);
     }
   }
 }
 
 async function fetchQuery(query) {
   const baseURL = "https://www.googleapis.com/youtube/v3";
-  const url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
-  const response = await axios.get(url);
-  return response.data.items;
+  let url = "";
+  let response = null;
+  let result = {
+    type: "",
+    data: null,
+  };
+
+  // To handle playlists, otherwise it is a video
+  if (query.includes("https://www.youtube.com/playlist?list=")) {
+    const playlistID = query.split("playlist?list=")[1];
+    url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=50`;
+    response = await axios.get(url);
+    // Check if playlist exists or is private
+    // Get more than 50 videos from a playlist
+
+    result.type = "playlist";
+    result.data = response.data.items[5];
+  } else {
+    url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
+    response = await axios.get(url);
+    // Check if video exists or is private
+
+    result.type = "video";
+    result.data = response.data.items[0];
+  }
+  return result;
 }
