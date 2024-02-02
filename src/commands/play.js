@@ -52,7 +52,17 @@ export default async function Play({ message, parameters, songQueue, player }) {
       );
       */
       console.log(response.type);
-      console.log(response.data);
+      if (response.data === null || response.data.length === 0) {
+        if (response.type === "video")
+          message.reply("This video does not exist or is private!");
+        else message.reply("This playlist does not exist or is private!");
+        return;
+      }
+      if (response.type === "video") console.log(response.data[0]);
+      else {
+        console.log(response.data[0]);
+        console.log(response.data[1]);
+      }
     }
   }
 }
@@ -60,29 +70,31 @@ export default async function Play({ message, parameters, songQueue, player }) {
 async function fetchQuery(query) {
   const baseURL = "https://www.googleapis.com/youtube/v3";
   let url = "";
+  let type = "";
   let response = null;
-  let result = {
-    type: "",
-    data: null,
-  };
 
   // To handle playlists, otherwise it is a video
   if (query.includes("https://www.youtube.com/playlist?list=")) {
     const playlistID = query.split("playlist?list=")[1];
     url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=50`;
-    response = await axios.get(url);
-    // Check if playlist exists or is private
     // Get more than 50 videos from a playlist
-
-    result.type = "playlist";
-    result.data = response.data.items[5];
+    type = "playlist";
   } else {
     url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
-    response = await axios.get(url);
-    // Check if video exists or is private
-
-    result.type = "video";
-    result.data = response.data.items[0];
+    type = "video";
   }
-  return result;
+
+  // If the request fetch fails (such as fetching a video/playlist that doesn't exist or is private), return null for the data (still return the type (video or playlist))
+  try {
+    response = await axios.get(url);
+    return {
+      type: type,
+      data: response.data.items,
+    };
+  } catch (e) {
+    return {
+      type: type,
+      data: null,
+    };
+  }
 }
