@@ -29,7 +29,7 @@ export default async function Play({ message, parameters, songQueue, player }) {
       });
 
       if (response.type === "video") {
-        await mainPlayFunctionality(message, songQueue, response.data[0]);
+        await addResourceToQueue(message, songQueue, response.data[0]);
         if (songQueue.length === 1) {
           connection.subscribe(player);
           player.play(songQueue[0].resource);
@@ -76,7 +76,7 @@ async function fetchQuery(query) {
   }
 }
 
-async function mainPlayFunctionality(message, songQueue, response) {
+async function addResourceToQueue(message, songQueue, response) {
   const videoURL = `https://www.youtube.com/watch?v=${response.id.videoId}`;
 
   // This is a workaround for the play-dl package not being able to play age restricted videos
