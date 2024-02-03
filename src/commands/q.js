@@ -31,7 +31,7 @@ export default function Queue({ message, songQueue }) {
               value: `${songQueue
                 .slice(1)
                 .map(
-                  (item, index) => `${index + 1}. [${item.title}](${item.url})`
+                  (item, index) => `${index + 2}. [${item.title}](${item.url})`
                 )
                 .join("\n")}`,
             }),
