@@ -13,21 +13,31 @@ export default async function Play({ message, parameters, songQueue, player }) {
       message.reply("Please supply a valid song request!");
     else {
       const response = await fetchQuery(searchQuery);
+      // Check if video or playlist exists
       if (response.data === null || response.data.length === 0) {
         if (response.type === "video")
           message.reply("This video does not exist or is private!");
         else message.reply("This playlist does not exist or is private!");
         return;
       }
-      if (response.type === "video")
-        mainPlayFunctionality(
-          message,
-          songQueue,
-          player,
-          userInChannel,
-          response.data[0]
+
+      // Join voice channel
+      const connection = joinVoiceChannel({
+        channelId: userInChannel.id,
+        guildId: message.guild.id,
+        adapterCreator: message.guild.voiceAdapterCreator,
+      });
+
+      if (response.type === "video") {
+        await mainPlayFunctionality(message, songQueue, response.data[0]);
+        if (songQueue.length === 1) {
+          connection.subscribe(player);
+          player.play(songQueue[0].resource);
+        }
+        message.reply(
+          `${songQueue[songQueue.length - 1].url} added to queue at position: **${songQueue.length}**`
         );
-      else {
+      } else {
         console.log(response.data[0]);
         console.log(response.data[1]);
       }
@@ -66,13 +76,7 @@ async function fetchQuery(query) {
   }
 }
 
-async function mainPlayFunctionality(
-  message,
-  songQueue,
-  player,
-  userInChannel,
-  response
-) {
+async function mainPlayFunctionality(message, songQueue, response) {
   const videoURL = `https://www.youtube.com/watch?v=${response.id.videoId}`;
 
   // This is a workaround for the play-dl package not being able to play age restricted videos
@@ -84,11 +88,6 @@ async function mainPlayFunctionality(
     return;
   }
 
-  const connection = joinVoiceChannel({
-    channelId: userInChannel.id,
-    guildId: message.guild.id,
-    adapterCreator: message.guild.voiceAdapterCreator,
-  });
   const resource = createAudioResource(stream.stream, {
     inputType: stream.type,
   });
@@ -101,13 +100,4 @@ async function mainPlayFunctionality(
     url: videoURL,
     resource: resource,
   });
-
-  // Decide if this stays in method or goes outside when experimenting with playlist functionality
-  if (songQueue.length === 1) {
-    connection.subscribe(player);
-    player.play(songQueue[0].resource);
-  }
-  message.reply(
-    `${videoURL} added to queue at position: **${songQueue.length}**`
-  );
 }
