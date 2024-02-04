@@ -24,6 +24,7 @@ client.login(process.env.BOT_TOKEN);
 
 client.on("ready", () => {
   console.log(`${client.user.username} has logged in.`);
+  client.user.setActivity("!help for commands", { type: "LISTENING" });
   client.guilds.cache.forEach((guild) => {
     const player = createAudioPlayer({
       behaviors: {
