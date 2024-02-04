@@ -13,8 +13,8 @@ export default function Help({ message }) {
       },
       { name: "• List of commands:", value: "`!help`" },
       {
-        name: "• Bot joins a voice channel and plays music:",
-        value: "`!play <name|URL>`",
+        name: "• Bot joins a voice channel and plays music from a video or playlist:",
+        value: "`!play <name | (video URL | playlist URL)>`",
       },
       {
         name: "• Pauses/unpauses the current song playing:",
