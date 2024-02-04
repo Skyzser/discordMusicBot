@@ -29,17 +29,40 @@ export default async function Play({ message, parameters, songQueue, player }) {
       });
 
       if (response.type === "video") {
-        await addResourceToQueue(message, songQueue, response.data[0]);
+        await addResourceToQueue(
+          message,
+          songQueue,
+          response.data[0],
+          response.type
+        );
         if (songQueue.length === 1) {
           connection.subscribe(player);
           player.play(songQueue[0].resource);
         }
-        message.reply(
-          `${songQueue[songQueue.length - 1].url} added to queue at position: **${songQueue.length}**`
-        );
+        if (songQueue.length !== 0) {
+          message.reply(
+            `${songQueue[songQueue.length - 1].url} added to queue at position: **${songQueue.length}**`
+          );
+        }
       } else {
-        console.log(response.data[0]);
-        console.log(response.data[1]);
+        const resLen = response.data.length;
+        message.reply(`Adding ${resLen} songs from playlist to queue...`);
+        for (let i = 0; i < resLen; i++) {
+          await addResourceToQueue(
+            message,
+            songQueue,
+            response.data[i],
+            response.type
+          );
+        }
+        // Check if songQueue is equal to the length of the playlist, otherwise there is already a song before it so don't skip that song
+        if (songQueue.length === resLen) {
+          connection.subscribe(player);
+          player.play(songQueue[0].resource);
+        }
+        message.reply(
+          `${resLen} songs from playlist added to queue at position: **${songQueue.length - resLen + 1}** to **${songQueue.length}**`
+        );
       }
     }
   }
@@ -54,7 +77,7 @@ async function fetchQuery(query) {
   // To handle playlists, otherwise it is a video
   if (query.includes("https://www.youtube.com/playlist?list=")) {
     const playlistID = query.split("playlist?list=")[1];
-    url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=50`;
+    url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=5`;
     type = "playlist";
   } else {
     url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
@@ -76,15 +99,20 @@ async function fetchQuery(query) {
   }
 }
 
-async function addResourceToQueue(message, songQueue, response) {
-  const videoURL = `https://www.youtube.com/watch?v=${response.id.videoId}`;
+async function addResourceToQueue(message, songQueue, response, type) {
+  // Playlist items have a different structure than videos
+  const ID =
+    type === "video"
+      ? response.id.videoId
+      : response.snippet.resourceId.videoId;
+  const videoURL = `https://www.youtube.com/watch?v=${ID}`;
 
   // This is a workaround for the play-dl package not being able to play age restricted videos
   let stream = null;
   try {
     stream = await play.stream(videoURL, { quality: 2 });
   } catch (e) {
-    message.reply("This video is age restricted and cannot be played!");
+    message.reply(`The video: ${videoURL} cannot be played!`);
     return;
   }
 
