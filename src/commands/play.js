@@ -45,24 +45,35 @@ export default async function Play({ message, parameters, songQueue, player }) {
           );
         }
       } else {
-        const resLen = response.data.length;
-        message.reply(`Adding ${resLen} songs from playlist to queue...`);
-        for (let i = 0; i < resLen; i++) {
+        let faultyVideos = 0;
+        message.reply(
+          `Adding ${response.data.length} ${response.data.length === 1 ? "song" : "songs"} from playlist to queue...`
+        );
+        for (let i = 0; i < response.data.length; i++) {
           await addResourceToQueue(
             message,
             songQueue,
             response.data[i],
             response.type
-          );
+          ).then((res) => {
+            if (res === false) faultyVideos++;
+          });
         }
+        const resLen = response.data.length - faultyVideos;
         // Check if songQueue is equal to the length of the playlist, otherwise there is already a song before it so don't skip that song
-        if (songQueue.length === resLen) {
+        if (songQueue.length === resLen && songQueue.length !== 0) {
           connection.subscribe(player);
           player.play(songQueue[0].resource);
         }
-        message.reply(
-          `${resLen} songs from playlist added to queue at position: **${songQueue.length - resLen + 1}** to **${songQueue.length}**`
-        );
+        if (songQueue.length !== 0) {
+          message.reply(
+            `${resLen} ${resLen === 1 ? "song" : "songs"} from playlist added to queue at position: **${songQueue.length - resLen + 1}** to **${songQueue.length}**`
+          );
+        } else {
+          message.reply(
+            `No songs from the playlist could be added to the queue!`
+          );
+        }
       }
     }
   }
@@ -113,7 +124,7 @@ async function addResourceToQueue(message, songQueue, response, type) {
     stream = await play.stream(videoURL, { quality: 2 });
   } catch (e) {
     message.reply(`The video: ${videoURL} cannot be played!`);
-    return;
+    return false;
   }
 
   const resource = createAudioResource(stream.stream, {
