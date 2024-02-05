@@ -41,13 +41,17 @@ export default async function Play({ message, parameters, songQueue, player }) {
         }
         if (songQueue.length !== 0) {
           message.reply(
-            `${songQueue[songQueue.length - 1].url} added to queue at position: **${songQueue.length}**`
+            `${
+              songQueue[songQueue.length - 1].url
+            } added to queue at position: **${songQueue.length}**`
           );
         }
       } else {
         let faultyVideos = 0;
         message.reply(
-          `Adding ${response.data.length} ${response.data.length === 1 ? "song" : "songs"} from playlist to queue...`
+          `Adding ${response.data.length} ${
+            response.data.length === 1 ? "song" : "songs"
+          } from playlist to queue...`
         );
         for (let i = 0; i < response.data.length; i++) {
           await addResourceToQueue(
@@ -67,7 +71,11 @@ export default async function Play({ message, parameters, songQueue, player }) {
         }
         if (songQueue.length !== 0) {
           message.reply(
-            `${resLen} ${resLen === 1 ? "song" : "songs"} from playlist added to queue at position: **${songQueue.length - resLen + 1}** to **${songQueue.length}**`
+            `${resLen} ${
+              resLen === 1 ? "song" : "songs"
+            } from playlist added to queue at position: **${
+              songQueue.length - resLen + 1
+            }** to **${songQueue.length}**`
           );
         } else {
           message.reply(
@@ -88,7 +96,7 @@ async function fetchQuery(query) {
   // To handle playlists, otherwise it is a video
   if (query.includes("https://www.youtube.com/playlist?list=")) {
     const playlistID = query.split("playlist?list=")[1];
-    url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=5`;
+    url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=50`;
     type = "playlist";
   } else {
     url = `${baseURL}/search?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${query}`;
