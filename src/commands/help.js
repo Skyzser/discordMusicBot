@@ -25,7 +25,7 @@ export default function Help({ message }) {
         value: "`!skip | !skip <x>`",
       },
       {
-        name: "• Allows to view the full list of songs queued:",
+        name: "• Allows to view the full list of songs queued (paginated):",
         value: "`!q`",
       },
       {
