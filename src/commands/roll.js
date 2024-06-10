@@ -30,7 +30,9 @@ export default function Roll({ message, parameters }) {
             let randomRoll = Math.floor(Math.random() * (sides - 1 + 1)) + 1; // Sides is the max number and 1 is the min number (the first +1 is to include the max number)
             rolls.push(randomRoll);
           }
-          message.reply(`Rolled ${dice}, ${sides}-sided dice:\n${rolls} `);
+          message.channel.send(
+            `Rolled ${dice}, ${sides}-sided dice:\n${rolls} `
+          );
         }
       } else
         message.reply(
