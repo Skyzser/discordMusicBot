@@ -20,7 +20,6 @@ export default async function Play({ message, parameters, songQueue, player }) {
         else message.reply("This playlist does not exist or is private!");
         return;
       }
-
       // Join voice channel
       const connection = joinVoiceChannel({
         channelId: userInChannel.id,
@@ -87,6 +86,22 @@ export default async function Play({ message, parameters, songQueue, player }) {
   }
 }
 
+async function handleResponseOutput(response, url, type) {
+  response = await axios.get(url);
+  // In the case of playlists, check if the playlist has more than 50 videos (keep cylcing through the pages until there are no more videos to fetch)
+  while (response.data.nextPageToken) {
+    const nextPage = await axios.get(
+      `${url}&pageToken=${response.data.nextPageToken}`
+    );
+    response.data.items = response.data.items.concat(nextPage.data.items);
+    response.data.nextPageToken = nextPage.data.nextPageToken;
+  }
+  return {
+    type: type,
+    data: response.data.items,
+  };
+}
+
 async function fetchQuery(query) {
   const baseURL = "https://www.googleapis.com/youtube/v3";
   let url = "";
@@ -105,11 +120,7 @@ async function fetchQuery(query) {
 
   // If the request fetch fails (such as fetching a video/playlist that doesn't exist or is private), return null for the data (still return the type (video or playlist))
   try {
-    response = await axios.get(url);
-    return {
-      type: type,
-      data: response.data.items,
-    };
+    return handleResponseOutput(response, url, type);
   } catch (e) {
     return {
       type: type,
@@ -131,7 +142,11 @@ async function addResourceToQueue(message, songQueue, response, type) {
   try {
     stream = await play.stream(videoURL, { quality: 2 });
   } catch (e) {
-    message.reply(`The video: ${videoURL} cannot be played!`);
+    await message.channel
+      .send(`The video: ${videoURL} cannot be played!`)
+      .then((msg) => {
+        setTimeout(() => msg.delete(), 5000);
+      });
     return false;
   }
 
