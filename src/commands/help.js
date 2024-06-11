@@ -34,7 +34,10 @@ export default function Help({ message }) {
       },
       { name: "\u200B", value: "\u200B" },
       { name: "• Displays general statistics of the bot:", value: "`!ping`" },
-      { name: "• Roll *A* amount of *X* sided dice:", value: "`!roll <AdX>`" },
+      {
+        name: "• Roll *A* amount of *X* sided dice:",
+        value: "`!roll <A>d<X>`",
+      },
       {
         name: "• Purge *x* amount of messages before command:",
         value: "`!purge <x>`",
