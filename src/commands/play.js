@@ -13,13 +13,20 @@ export default async function Play({ message, parameters, songQueue, player }) {
       message.reply("Please supply a valid song request!");
     else {
       const response = await fetchQuery(searchQuery);
-      // Check if video or playlist exists
-      if (response.data === null || response.data.length === 0) {
-        if (response.type === "video")
-          message.reply("This video does not exist or is private!");
-        else message.reply("This playlist does not exist or is private!");
-        return;
+
+      if (response.data === "quotaExceeded") {
+        return message.reply(
+          "The daily quota for the YouTube API has been exceeded, please try again tomorrow!"
+        );
       }
+      // Check if video/playlist exists
+      if (response.data === null || response.data.length === 0) {
+        return message.reply("This video does not exist or is private!");
+      }
+      if (response.data === "playlistNotFound") {
+        return message.reply("This playlist does not exist or is private!");
+      }
+
       // Join voice channel
       const connection = joinVoiceChannel({
         channelId: userInChannel.id,
@@ -86,27 +93,32 @@ export default async function Play({ message, parameters, songQueue, player }) {
   }
 }
 
-async function handleResponseOutput(response, url, type) {
-  response = await axios.get(url);
-  // In the case of playlists, check if the playlist has more than 50 videos (keep cylcing through the pages until there are no more videos to fetch)
-  while (response.data.nextPageToken) {
-    const nextPage = await axios.get(
-      `${url}&pageToken=${response.data.nextPageToken}`
-    );
-    response.data.items = response.data.items.concat(nextPage.data.items);
-    response.data.nextPageToken = nextPage.data.nextPageToken;
+async function handleResponseOutput(url, type) {
+  let response = null;
+  try {
+    response = await axios.get(url);
+  } catch (e) {
+    return e.response.data.error.errors[0].reason;
   }
-  return {
-    type: type,
-    data: response.data.items,
-  };
+
+  // In the case of playlists, check if the playlist has more than 50 videos (keep cylcing through the pages until there are no more videos to fetch)
+  if (type === "playlist") {
+    while (response.data.nextPageToken) {
+      const nextPage = await axios.get(
+        `${url}&pageToken=${response.data.nextPageToken}`
+      );
+      response.data.items = response.data.items.concat(nextPage.data.items);
+      response.data.nextPageToken = nextPage.data.nextPageToken;
+    }
+  }
+
+  return response.data.items;
 }
 
 async function fetchQuery(query) {
   const baseURL = "https://www.googleapis.com/youtube/v3";
   let url = "";
   let type = "";
-  let response = null;
 
   // To handle playlists, otherwise it is a video
   if (query.includes("https://www.youtube.com/playlist?list=")) {
@@ -118,15 +130,10 @@ async function fetchQuery(query) {
     type = "video";
   }
 
-  // If the request fetch fails (such as fetching a video/playlist that doesn't exist or is private), return null for the data (still return the type (video or playlist))
-  try {
-    return handleResponseOutput(response, url, type);
-  } catch (e) {
-    return {
-      type: type,
-      data: null,
-    };
-  }
+  return {
+    type: type,
+    data: await handleResponseOutput(url, type),
+  };
 }
 
 async function addResourceToQueue(message, songQueue, response, type) {
