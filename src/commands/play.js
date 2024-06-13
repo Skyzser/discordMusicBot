@@ -152,7 +152,7 @@ async function addResourceToQueue(message, songQueue, response, type) {
     await message.channel
       .send(`The video: ${videoURL} cannot be played!`)
       .then((msg) => {
-        setTimeout(() => msg.delete(), 5000);
+        setTimeout(() => msg.delete(), 3000);
       });
     return false;
   }
