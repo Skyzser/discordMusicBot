@@ -10,37 +10,61 @@ export default async function Skip({ message, parameters, songQueue, player }) {
       // If you just type !skip, it will skip the current song
       if (parameters.length === 0) {
         const skippedSong = songQueue.shift();
-        message.channel.send(`Skipped **${regexChecker(skippedSong.title)}**`);
+        await message.channel
+          .send(`Skipped **${regexChecker(skippedSong.title)}** :track_next:`)
+          .then((msg) => {
+            setTimeout(() => msg.delete(), 3000);
+          });
 
         if (songQueue.length === 0) player.stop();
         else {
           player.play(songQueue[0].resource);
-          message.channel.send(
-            `Now playing **${regexChecker(songQueue[0].title)}**`
-          );
+          await message.channel
+            .send(
+              `Now playing **${regexChecker(
+                songQueue[0].title
+              )}** :arrow_forward:`
+            )
+            .then((msg) => {
+              setTimeout(() => msg.delete(), 3000);
+            });
         }
       } else {
         const numberOfSongsToSkip = parameters[0];
         if (Number(numberOfSongsToSkip)) {
           if (numberOfSongsToSkip >= songQueue.length) {
             songQueue.splice(0, songQueue.length);
-            message.channel.send(`Skipped **all** songs in the queue!`);
+            await message.channel
+              .send(`Skipped **all** songs in the queue :track_next:`)
+              .then((msg) => {
+                setTimeout(() => msg.delete(), 3000);
+              });
           } else {
             songQueue.splice(
               0,
               songQueue.length - (songQueue.length - numberOfSongsToSkip)
             );
-            message.channel.send(
-              `Skipped **${numberOfSongsToSkip}** songs in the queue!`
-            );
+            await message.channel
+              .send(
+                `Skipped **${numberOfSongsToSkip}** songs in the queue :track_next:`
+              )
+              .then((msg) => {
+                setTimeout(() => msg.delete(), 3000);
+              });
           }
 
           if (songQueue.length === 0) player.stop();
           else {
             player.play(songQueue[0].resource);
-            message.channel.send(
-              `Now playing **${regexChecker(songQueue[0].title)}**`
-            );
+            await message.channel
+              .send(
+                `Now playing **${regexChecker(
+                  songQueue[0].title
+                )}** :arrow_forward:`
+              )
+              .then((msg) => {
+                setTimeout(() => msg.delete(), 3000);
+              });
           }
         } else
           message.reply(
