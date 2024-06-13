@@ -29,6 +29,10 @@ export default function Help({ message }) {
         value: "`!q`",
       },
       {
+        name: "• Shuffles the song queue:",
+        value: "`!shuffle`",
+      },
+      {
         name: "• Stops the music and leaves the voice channel:",
         value: "`!leave`",
       },
