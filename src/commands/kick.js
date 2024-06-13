@@ -22,7 +22,11 @@ export default async function Kick({ message, parameters }) {
             // Works as a promise
             member
               .kick()
-              .then((member) => message.channel.send(`${member} was kicked!`))
+              .then((member) =>
+                message.channel.send(`${member} was kicked!`).then((msg) => {
+                  setTimeout(() => msg.delete(), 3000);
+                })
+              )
               .catch((err) =>
                 message.reply("Permission denied to kick that user!")
               );
