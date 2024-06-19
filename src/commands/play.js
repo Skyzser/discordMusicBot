@@ -1,6 +1,7 @@
 import { joinVoiceChannel, createAudioResource } from "@discordjs/voice";
 import ytdl from "ytdl-core";
 import axios from "axios";
+import { once } from "events";
 
 export default async function Play({ message, parameters, songQueue, player }) {
   const userInChannel = await message.member.voice.channel;
@@ -34,17 +35,17 @@ export default async function Play({ message, parameters, songQueue, player }) {
   });
 
   if (response.type === "video") {
-    await addResourceToQueue(
+    const result = await addResourceToQueue(
       message,
       songQueue,
       response.data[0],
       response.type
     );
-    if (songQueue.length === 1) {
-      connection.subscribe(player);
-      player.play(songQueue[0].resource);
-    }
-    if (songQueue.length !== 0) {
+    if (result) {
+      if (songQueue.length === 1) {
+        connection.subscribe(player);
+        player.play(songQueue[0].resource);
+      }
       message.reply(
         `${songQueue[songQueue.length - 1].url} added to queue at position: **${
           songQueue.length
@@ -59,14 +60,13 @@ export default async function Play({ message, parameters, songQueue, player }) {
       } from playlist to queue...`
     );
     for (let i = 0; i < response.data.length; i++) {
-      await addResourceToQueue(
+      const result = await addResourceToQueue(
         message,
         songQueue,
         response.data[i],
         response.type
-      ).then((res) => {
-        if (res === false) faultyVideos++;
-      });
+      );
+      if (!result) faultyVideos++;
     }
     const resLen = response.data.length - faultyVideos;
     // Check if songQueue is equal to the length of the playlist, otherwise there is already a song before it so don't skip that song
@@ -139,10 +139,19 @@ async function addResourceToQueue(message, songQueue, response, type) {
       : response.snippet.resourceId.videoId;
   const videoURL = `https://www.youtube.com/watch?v=${ID}`;
 
-  let stream = null;
+  let stream;
   try {
-    stream = ytdl(videoURL, { filter: "audioonly", quality: "highestaudio" });
-  } catch (e) {
+    stream = ytdl(videoURL, {
+      quality: "highestaudio",
+      filter: "audioonly",
+    });
+
+    await once(stream, "info");
+
+    stream.on("error", (err) => {
+      throw err;
+    });
+  } catch (error) {
     await message.channel
       .send(`The video: ${videoURL} cannot be played!`)
       .then((msg) => {
@@ -163,4 +172,5 @@ async function addResourceToQueue(message, songQueue, response, type) {
     url: videoURL,
     resource: resource,
   });
+  return true;
 }
