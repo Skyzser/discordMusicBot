@@ -18,6 +18,6 @@
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.10",
     "pagination.djs": "^3.6.5",
-    "play-dl": "^1.9.6"
+    "ytdl-core": "^4.11.5"
   }
 }

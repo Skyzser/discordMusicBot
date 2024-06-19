@@ -1,94 +1,89 @@
 import { joinVoiceChannel, createAudioResource } from "@discordjs/voice";
+import ytdl from "ytdl-core";
 import axios from "axios";
-import play from "play-dl";
 
 export default async function Play({ message, parameters, songQueue, player }) {
   const userInChannel = await message.member.voice.channel;
   // Check if user is in a voice channel
-  if (!userInChannel) message.reply("You are not in a voice channel!");
-  else {
-    const searchQuery = parameters.toString();
-    // Check if user supplied a parameter to request a search for
-    if (searchQuery === "")
-      message.reply("Please supply a valid song request!");
-    else {
-      const response = await fetchQuery(searchQuery);
+  if (!userInChannel) return message.reply("You are not in a voice channel!");
 
-      if (response.data === "quotaExceeded") {
-        return message.reply(
-          "The daily quota for the YouTube API has been exceeded, please try again tomorrow!"
-        );
-      }
-      // Check if video/playlist exists
-      if (response.data === null || response.data.length === 0) {
-        return message.reply("This video does not exist or is private!");
-      }
-      if (response.data === "playlistNotFound") {
-        return message.reply("This playlist does not exist or is private!");
-      }
+  const searchQuery = parameters.toString();
+  // Check if user supplied a parameter to request a search for
+  if (searchQuery === "")
+    return message.reply("Please supply a valid song request!");
 
-      // Join voice channel
-      const connection = joinVoiceChannel({
-        channelId: userInChannel.id,
-        guildId: message.guild.id,
-        adapterCreator: message.guild.voiceAdapterCreator,
+  const response = await fetchQuery(searchQuery);
+
+  if (response.data === "quotaExceeded") {
+    return message.reply(
+      "The daily quota for the YouTube API has been exceeded, please try again tomorrow!"
+    );
+  }
+  // Check if video/playlist exists
+  if (response.data === null || response.data.length === 0) {
+    return message.reply("This video does not exist or is private!");
+  }
+  if (response.data === "playlistNotFound") {
+    return message.reply("This playlist does not exist or is private!");
+  }
+  // Join voice channel
+  const connection = joinVoiceChannel({
+    channelId: userInChannel.id,
+    guildId: message.guild.id,
+    adapterCreator: message.guild.voiceAdapterCreator,
+  });
+
+  if (response.type === "video") {
+    await addResourceToQueue(
+      message,
+      songQueue,
+      response.data[0],
+      response.type
+    );
+    if (songQueue.length === 1) {
+      connection.subscribe(player);
+      player.play(songQueue[0].resource);
+    }
+    if (songQueue.length !== 0) {
+      message.reply(
+        `${songQueue[songQueue.length - 1].url} added to queue at position: **${
+          songQueue.length
+        }**`
+      );
+    }
+  } else {
+    let faultyVideos = 0;
+    message.reply(
+      `Adding ${response.data.length} ${
+        response.data.length === 1 ? "song" : "songs"
+      } from playlist to queue...`
+    );
+    for (let i = 0; i < response.data.length; i++) {
+      await addResourceToQueue(
+        message,
+        songQueue,
+        response.data[i],
+        response.type
+      ).then((res) => {
+        if (res === false) faultyVideos++;
       });
-
-      if (response.type === "video") {
-        await addResourceToQueue(
-          message,
-          songQueue,
-          response.data[0],
-          response.type
-        );
-        if (songQueue.length === 1) {
-          connection.subscribe(player);
-          player.play(songQueue[0].resource);
-        }
-        if (songQueue.length !== 0) {
-          message.reply(
-            `${
-              songQueue[songQueue.length - 1].url
-            } added to queue at position: **${songQueue.length}**`
-          );
-        }
-      } else {
-        let faultyVideos = 0;
-        message.reply(
-          `Adding ${response.data.length} ${
-            response.data.length === 1 ? "song" : "songs"
-          } from playlist to queue...`
-        );
-        for (let i = 0; i < response.data.length; i++) {
-          await addResourceToQueue(
-            message,
-            songQueue,
-            response.data[i],
-            response.type
-          ).then((res) => {
-            if (res === false) faultyVideos++;
-          });
-        }
-        const resLen = response.data.length - faultyVideos;
-        // Check if songQueue is equal to the length of the playlist, otherwise there is already a song before it so don't skip that song
-        if (songQueue.length === resLen && songQueue.length !== 0) {
-          connection.subscribe(player);
-          player.play(songQueue[0].resource);
-        }
-        if (songQueue.length !== 0) {
-          message.reply(
-            `${resLen} ${
-              resLen === 1 ? "song" : "songs"
-            } from playlist added to queue at position: **${
-              songQueue.length - resLen + 1
-            }** to **${songQueue.length}**`
-          );
-        } else {
-          message.reply(
-            `No songs from the playlist could be added to the queue!`
-          );
-        }
-      }
+    }
+    const resLen = response.data.length - faultyVideos;
+    // Check if songQueue is equal to the length of the playlist, otherwise there is already a song before it so don't skip that song
+    if (resLen > 0 && songQueue.length === resLen) {
+      connection.subscribe(player);
+      player.play(songQueue[0].resource);
+    }
+    if (songQueue.length !== 0) {
+      message.reply(
+        `${resLen} ${
+          resLen === 1 ? "song" : "songs"
+        } from playlist added to queue at position: **${
+          songQueue.length - resLen + 1
+        }** to **${songQueue.length}**`
+      );
+    } else {
+      message.reply(`No songs from the playlist could be added to the queue!`);
     }
   }
 }
@@ -121,8 +116,8 @@ async function fetchQuery(query) {
   let type = "";
 
   // To handle playlists, otherwise it is a video
-  if (query.includes("https://www.youtube.com/playlist?list=")) {
-    const playlistID = query.split("playlist?list=")[1];
+  if (query.includes("https://www.youtube.com/playlist?")) {
+    const playlistID = query.split("list=")[1];
     url = `${baseURL}/playlistItems?key=${process.env.YT_API_KEY}&part=snippet&playlistId=${playlistID}&maxResults=50`;
     type = "playlist";
   } else {
@@ -144,10 +139,9 @@ async function addResourceToQueue(message, songQueue, response, type) {
       : response.snippet.resourceId.videoId;
   const videoURL = `https://www.youtube.com/watch?v=${ID}`;
 
-  // This is a workaround for the play-dl package not being able to play age restricted videos
   let stream = null;
   try {
-    stream = await play.stream(videoURL, { quality: 2 });
+    stream = ytdl(videoURL, { filter: "audioonly", quality: "highestaudio" });
   } catch (e) {
     await message.channel
       .send(`The video: ${videoURL} cannot be played!`)
@@ -157,7 +151,7 @@ async function addResourceToQueue(message, songQueue, response, type) {
     return false;
   }
 
-  const resource = createAudioResource(stream.stream, {
+  const resource = createAudioResource(stream, {
     inputType: stream.type,
   });
 
