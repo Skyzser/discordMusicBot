@@ -1,7 +1,6 @@
 import { joinVoiceChannel, createAudioResource } from "@discordjs/voice";
 import ytdl from "ytdl-core";
 import axios from "axios";
-import { once } from "events";
 
 export default async function Play({ message, parameters, songQueue, player }) {
   const userInChannel = await message.member.voice.channel;
@@ -131,6 +130,27 @@ async function fetchQuery(query) {
   };
 }
 
+async function generateStream(url) {
+  // Can do reject(err) instead of resolve for the error, and then handle the error outside, but this solution is cleaner
+  return new Promise((resolve, reject) => {
+    let stream = ytdl(url, {
+      filter: "audioonly",
+      fmt: "mp3",
+      highWaterMark: 1 << 62,
+      liveBuffer: 1 << 62,
+      dlChunkSize: 0, //disabling chunking is recommended in discord bot
+      bitrate: 128,
+      quality: "lowestaudio",
+    })
+      .on("error", (err) => {
+        resolve(null);
+      })
+      .on("response", () => {
+        resolve(stream);
+      });
+  });
+}
+
 async function addResourceToQueue(message, songQueue, response, type) {
   // Playlist items have a different structure than videos
   const ID =
@@ -139,19 +159,8 @@ async function addResourceToQueue(message, songQueue, response, type) {
       : response.snippet.resourceId.videoId;
   const videoURL = `https://www.youtube.com/watch?v=${ID}`;
 
-  let stream;
-  try {
-    stream = ytdl(videoURL, {
-      quality: "highestaudio",
-      filter: "audioonly",
-    });
-
-    await once(stream, "info");
-
-    stream.on("error", (err) => {
-      throw err;
-    });
-  } catch (error) {
+  const stream = await generateStream(videoURL);
+  if (!stream) {
     await message.channel
       .send(`The video: ${videoURL} cannot be played!`)
       .then((msg) => {
@@ -172,5 +181,6 @@ async function addResourceToQueue(message, songQueue, response, type) {
     url: videoURL,
     resource: resource,
   });
+
   return true;
 }
