@@ -8,7 +8,7 @@ import {
 } from "@discordjs/voice";
 
 const PREFIX = "!";
-let dictionary = []; // Initialize empty array to store objects of server IDs, names, song queues, and players (for voice connection)
+let dictionary = [];
 
 const client = new Client({
   intents: [
@@ -32,7 +32,7 @@ client.on("ready", () => {
       },
     });
 
-    const songQueue = []; // Initialize songQueue here
+    const songQueue = [];
 
     dictionary.push({
       guildID: guild.id,
@@ -47,13 +47,11 @@ client.on("ready", () => {
           songQueue.shift();
           player.play(songQueue[0].resource);
         } catch (err) {
-          // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
           //console.log('queue autoplay error');
         }
       }
     });
   });
-  //console.log(dictionary.map(item => `Server ID: ${item.guildID} and server name: ${item.guildName}`));  // Will need to reintroduce guildName if this line is needed
 });
 
 client.on("messageCreate", async (message) => {
@@ -85,7 +83,6 @@ client.on("messageCreate", async (message) => {
         );
         command(params);
       } catch (err) {
-        // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
         //console.log('commands error');
       }
     }
@@ -114,13 +111,11 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     VC.members.size <= 1 &&
     VC.members.filter((member) => member.id === client.user.id).size !== 0
   ) {
-    // If the bot is the only member in the voice channel, leave the voice channel
     const botInChannel = await getVoiceConnection(VC.guild.id);
     // Thus far, the only error that arises from this try/catch block of code is when the client is restarted while the bot is still in voice channel, and then the all users leave to try to get the bot to leave (the whole reason for the if condition above)
     try {
       botInChannel.destroy();
     } catch (err) {
-      // Only for debugging purposes. If left, and bot is deployed, will clog up the console with errors, especially if cloud hosting is used
       //console.log('voiceStateUpdate error');
     }
   }
