@@ -33,11 +33,13 @@ client.on("ready", () => {
     });
 
     const songQueue = [];
+    const botDisconnected = { state: false };
 
     dictionary.push({
       guildID: guild.id,
       songQueue: songQueue, // Store the reference in the dictionary
       player: player,
+      botDisconnected: botDisconnected,
     });
 
     player.on(AudioPlayerStatus.Idle, () => {
@@ -74,6 +76,9 @@ client.on("messageCreate", async (message) => {
         ).songQueue,
         player: dictionary.find(({ guildID }) => guildID === message.guild.id)
           .player,
+        botDisconnected: dictionary.find(
+          ({ guildID }) => guildID === message.guild.id
+        ).botDisconnected,
       };
 
       try {
@@ -89,7 +94,6 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-// For live updates to users in voice channel, such as clearing queue if bot gets disconnected through admin privileges
 client.on("voiceStateUpdate", async (oldState, newState) => {
   // Old state is the voice state before any updates (e.g. joining the voice channel)
   // New state is the voice state after any updates (e.g. leaving the voice channel)
@@ -99,7 +103,13 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     VC = await client.channels.cache.get(newState.channelId);
   else if (newState.channelId === null) {
     VC = await client.channels.cache.get(oldState.channelId);
+    // This is for when the bot is disconnected through admin privileges
     if (newState.id === client.user.id) {
+      const botDisconnected = dictionary.find(
+        ({ guildID }) => guildID === newState.guild.id
+      ).botDisconnected;
+      botDisconnected.state = true;
+
       const songQueue = dictionary.find(
         ({ guildID }) => guildID === newState.guild.id
       ).songQueue;
@@ -115,6 +125,16 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     // Thus far, the only error that arises from this try/catch block of code is when the client is restarted while the bot is still in voice channel, and then the all users leave to try to get the bot to leave (the whole reason for the if condition above)
     try {
       botInChannel.destroy();
+
+      const botDisconnected = dictionary.find(
+        ({ guildID }) => guildID === newState.guild.id
+      ).botDisconnected;
+      botDisconnected.state = true;
+
+      const songQueue = dictionary.find(
+        ({ guildID }) => guildID === newState.guild.id
+      ).songQueue;
+      songQueue.splice(0, songQueue.length); // Empty the queue
     } catch (err) {
       //console.log('voiceStateUpdate error');
     }

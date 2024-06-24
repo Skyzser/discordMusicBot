@@ -2,7 +2,13 @@ import { joinVoiceChannel, createAudioResource } from "@discordjs/voice";
 import ytdl from "ytdl-core";
 import axios from "axios";
 
-export default async function Play({ message, parameters, songQueue, player }) {
+export default async function Play({
+  message,
+  parameters,
+  songQueue,
+  player,
+  botDisconnected,
+}) {
   const userInChannel = await message.member.voice.channel;
   // Check if user is in a voice channel
   if (!userInChannel) return message.reply("You are not in a voice channel!");
@@ -26,6 +32,10 @@ export default async function Play({ message, parameters, songQueue, player }) {
   if (response.data === "playlistNotFound") {
     return message.reply("This playlist does not exist or is private!");
   }
+
+  // Reset botDisconnected flag when starting to play a new song
+  botDisconnected.state = false;
+
   // Join voice channel
   const connection = joinVoiceChannel({
     channelId: userInChannel.id,
@@ -59,6 +69,11 @@ export default async function Play({ message, parameters, songQueue, player }) {
       } from playlist to queue...`
     );
     for (let i = 0; i < response.data.length; i++) {
+      // Check if the bot has been disconnected before adding each song
+      if (botDisconnected.state) {
+        songQueue.splice(0, songQueue.length); // Precaution as !leave command doesn't clear the queue fully
+        return;
+      }
       const result = await addResourceToQueue(
         message,
         songQueue,
