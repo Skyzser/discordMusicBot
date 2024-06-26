@@ -26,12 +26,10 @@ export default async function Play({
     );
   }
   // Check if video/playlist exists
-  if (response.data === null || response.data.length === 0) {
+  if (response.data === null || response.data.length === 0)
     return message.reply("This video does not exist or is private!");
-  }
-  if (response.data === "playlistNotFound") {
+  if (response.data === "playlistNotFound")
     return message.reply("This playlist does not exist or is private!");
-  }
 
   // Reset botDisconnected flag when starting to play a new song
   botDisconnected.state = false;
@@ -88,7 +86,7 @@ export default async function Play({
       connection.subscribe(player);
       player.play(songQueue[0].resource);
     }
-    if (songQueue.length !== 0) {
+    if (resLen !== 0) {
       message.reply(
         `${resLen} ${
           resLen === 1 ? "song" : "songs"
