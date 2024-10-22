@@ -12,7 +12,7 @@
   "type": "module",
   "dependencies": {
     "@discordjs/voice": "^0.16.0",
-    "axios": "^1.4.0",
+    "axios": "^1.7.7",
     "discord.js": "^13.16.0",
     "dotenv": "^16.0.1",
     "ffmpeg-static": "^4.4.1",

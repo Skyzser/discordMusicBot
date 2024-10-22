@@ -35,9 +35,9 @@ YT_API_KEY=<YOUR_YOUTUBE_API_KEY>
 ```
 
 ### Usage
-There are two ways you can run the bot (need to be in the project directory):
+There are two ways you can run the bot (need to be in the main project directory):
 - First method:
-  - Type `node main.js` on the terminal to start running the bot.
+  - Type `src/node main.js` on the terminal to start running the bot.
 - Second method:
   - Type `npm run dev` on the terminal to start running the bot.
     - You will most likely need <b>Nodemon</b> installed to run the bot using this script command (or just create a new script command).
